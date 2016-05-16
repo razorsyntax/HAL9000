@@ -3,8 +3,8 @@
  */
 
 var NeuralMathLib = {
-	"activations": function(active, value){
-		switch(active){
+    "activations": function(active, value){
+        switch(active){
 			case "logsig":
 				return 1 / (1+Math.exp(-value._data[0]));
 			case "tanh":
@@ -14,8 +14,8 @@ var NeuralMathLib = {
 			case "softmax":
 				//TODO:
 				return;
-		}
-	},
+        }
+    },
 	"backpropagation": function(obj){
 		//determines gradient descent for weights and bias
 		return obj;

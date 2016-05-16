@@ -13,8 +13,8 @@
  
 // A single neuron instance
 var Neuron = function(conditions){
-	"use strict";
-	var w = (typeof conditions === "undefined") ? NeuralMathLib.randomGauss() : 1;
+    "use strict";
+    var w = (typeof conditions === "undefined") ? NeuralMathLib.randomGauss() : 1;
     
      var obj = {
         input: [1], //change this to reflect initial input
@@ -28,11 +28,11 @@ var Neuron = function(conditions){
 Neuron.prototype.feedForward = function(refined){
     "use strict";
     if(typeof refined !== "undefined"){
-		//refined contains the new bias and weights
+        //refined contains the new bias and weights
         this.obj.input = refined.input;
         this.obj.weights = refined.weights;
         this.obj.bias = refined.bias;
-	}
+    }
     
     var inputsMAT = math.matrix(this.obj.input);
     var weightsMAT = math.matrix(this.obj.weights);
