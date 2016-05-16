@@ -2,19 +2,18 @@
  * Instantiating a neuron can be initialized empty
  *          var node = new Neuron();
  * or by passing JSON obj with
- * var obj = {
- *      input: [1], // pass array of initial inputs
- *      weights: [w], // pass an array of initial weights
- *      bias:  1, // pass the starting initial bias
- *      activation: "" //pass string of the name of the activation function you wish to use
- * }
- *          var node = new Neuron(obj)
+ *          var obj = {
+ *              input: [1], // an array of initial inputs
+ *              weights: [w], // an array of initial weights
+ *              bias:  1, // pass the starting initial bias integer
+ *              activation: "" //pass string of the name of the activation function you wish to use
+ *          };
+ *          var node = new Neuron(obj);
  **/
  
 // A single neuron instance
 var Neuron = function(conditions){
 	"use strict";
-
 	var w = (typeof conditions === "undefined") ? NeuralMathLib.randomGauss() : 1;
     
      var obj = {
@@ -41,5 +40,5 @@ Neuron.prototype.feedForward = function(refined){
     var totalMAT = math.add(sumMAT, math.matrix([this.obj.bias]));//sumMAT + b
     var result = NeuralMathLib.activations(this.obj.activation, totalMAT); //activation function
     return result;
-    //creates 1 output and sets the new weights and bias
+    //TODO: creates 1 output and sets the new weights and bias
 };

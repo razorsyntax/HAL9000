@@ -17,11 +17,11 @@ var NeuralMathLib = {
 		}
 	},
 	"backpropagation": function(obj){
-		//determines gradient descent for weights and bias'
+		//determines gradient descent for weights and bias
 		return obj;
 	},
 	//Creates pseudo-random values between 0 & 1
-	"randomGauss": function() { // Unable to find originator of this
+	"randomGauss": function() { // Unable to find originator of this function
 		var x1, x2, rad, y1;
 		do {
 			x1 = 2 * Math.random() - 1;

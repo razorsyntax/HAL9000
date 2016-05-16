@@ -9,7 +9,7 @@
 
 
 var OutputLayer = function(hiddenLayerArray) {
-	//TODO: Determine Gradient Decent to update weights and bias
+	//TODO: Determine Gradient Descent to update weights and bias
 };
 
 
