@@ -19,7 +19,3 @@ var OutputLayer = function(hiddenLayerArray) {
 	w is usually a number between -1 & 1 or 0 & 1
 	b = bias starts as 1 and is also weighted as bw (it's own w)
 */
-
-/*
- * Need a permanent hook into weights and bias so they can be modified and updated
- */
