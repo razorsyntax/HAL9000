@@ -1,4 +1,7 @@
-// 'a' is the activation into the neuron and 'p' controls the sigmoid curve shape
+/**
+ * Algorithm library
+ */
+
 var NeuralMathLib = {
 	"activations": function(active, value){
 		switch(active){
@@ -9,14 +12,16 @@ var NeuralMathLib = {
 				var negN = Math.exp(-value._data[0]); // e^(-n)
 				return (posN - negN) / (posN + negN);
 			case "softmax":
+				//TODO:
 				return;
 		}
 	},
 	"backpropagation": function(obj){
-		//determines gradient decent for weights and bias'
+		//determines gradient descent for weights and bias'
 		return obj;
 	},
-	"randomGauss": function() { // rewrite & credit to the originator shortly
+	//Creates pseudo-random values between 0 & 1
+	"randomGauss": function() { // Unable to find originator of this
 		var x1, x2, rad, y1;
 		do {
 			x1 = 2 * Math.random() - 1;

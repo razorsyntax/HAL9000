@@ -10,13 +10,13 @@
  * }
  *          var node = new Neuron(obj)
  **/
+ 
 // A single neuron instance
 var Neuron = function(conditions){
 	"use strict";
-	if(typeof conditions === "undefined"){
-		var w = NeuralMathLib.randomGauss();
-	}
-	
+
+	var w = (typeof conditions === "undefined") ? NeuralMathLib.randomGauss() : 1;
+    
      var obj = {
         input: [1], //change this to reflect initial input
         weights: [w],
