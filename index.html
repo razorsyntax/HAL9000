@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="HAL9000.js"></script>
+		<script type="text/javascript" src="algorithms.js"></script>
+		<script type="text/javascript" src="layer.js"></script>
+		<script type="text/javascript" src="neuron.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.2.1/math.min.js"></script>
+		
+	</head>
+	<body></body>
+	<script>
+		(function(){
+			//          TESTING REGION          \\
+			/************************************/
+			// Uninitialized Neuron
+			var node = new Neuron();
+			node = node.feedForward();
+			console.log("Test 1\n");
+			console.log("Default Initialization: \n" + node + "\n\n");
+			
+			// Initialized Neuron logsig
+			var node2 = new Neuron({input:[1,2,3], weights:[.4,.3,5], bias:1, activation:"logsig" });
+			node2 = node2.feedForward();
+			console.log("Test 2\n");
+			console.log("Activation logsig: \n" + node2 + "\n\n");
+			
+			// Initialized Neuron tanh
+			var node3 = new Neuron({input:[1,2,3], weights:[.4,.3,5], bias:1, activation:"tanh" });
+			node3 = node3.feedForward();
+			console.log("Test 3\n");
+			console.log("Activation tanh: \n" + node3 + "\n\n");
+			
+			// This represents the new weights and bias from gradient decent
+			var node4 = new Neuron();
+			node4 = node4.feedForward({input:[1,2,3], weights:[.6,.1,7], bias:.5});
+			console.log("Test 4\n");
+			console.log("Feed Forward: \n" + node4);
+			/************************************/
+
+		}).call(this);
+	</script>
+</html>
