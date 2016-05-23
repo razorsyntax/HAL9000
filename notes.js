@@ -13,14 +13,14 @@ var neuralNetwork = {
         }
     ],
     hiddenNetwork: {
-        name: ""
+        name: "",
         layers: [// array of layer objects
             { 
                 layer: "name1",
                 neurons: [
                     {
                         id: "1",
-                        activation: tanh"",
+                        activation: "tanh",
                         weights: [],
                         bias: []
                     }
