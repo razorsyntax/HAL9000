@@ -1,6 +1,11 @@
-// This just personal notes on obj structure and will be deleted once finalized
-
+/**
+ * This will be deleted once finalized.
+ * This object represents the complete neural network.
+ * All work done will be to this obj, which will update over time
+ */
 var neuralNetwork = {
+    id: "",
+    type: "training", // strings: training, supervised, notLearning
     inputs: [ //array of input objects
         { 
             inputName: "",
