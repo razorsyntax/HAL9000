@@ -1,5 +1,5 @@
 /**
- * This will be deleted once finalized.
+ * This file will be deleted once finalized.
  * This object represents the complete neural network.
  * All work done will be to this obj, which will update over time
  */
