@@ -4,16 +4,20 @@
 
 var NeuralMathLib = {
     "activations": function(active, value){
+    	var val = value._data[0];
         switch(active){
 	    case "logsig":
-	        return 1 / (1+Math.exp(-value._data[0]));
+	        return 1 / (1+Math.exp(-val));
 	    case "tanh":
-	        var posN = Math.exp(value._data[0]);  // e^(n)
-	        var negN = Math.exp(-value._data[0]); // e^(-n)
+	        var posN = Math.exp(val);  // e^(n)
+	        var negN = Math.exp(-val); // e^(-n)
 	        return (posN - negN) / (posN + negN);
-	    case "softmax":
-	        //TODO:
-	        return;
+	    case "linear":
+	        return val;
+	    case "arctan":
+	    	return Math.atan(val);
+	    case "gaussian":
+	    	return Math.exp(-Math.pow(val,2)); // e^(-(x^2))
         }
     },
     "backpropagation": function(obj){
