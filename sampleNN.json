@@ -1,0 +1,36 @@
+/**
+* This is a sample Neural Network obj. This will be updated to reflect a NN that's ready to be trained
+*/
+{
+        "name": "HAL9000",
+        "layers": [ // array of layer objects
+            {
+                "layer": "Edge_Detection",
+                "neurons": [ // array of neuron objects
+                    {
+                        "id": "A1",
+                        "activation": "tanh",
+                        "weights": [],
+                        "bias": 1
+                    },
+                    {
+                        "id": "A2",
+                        "activation": "tanh",
+                        "weights": [],
+                        "bias": 1
+                    }
+                ]
+            },
+            {
+                "layer": "Obj_Detection",
+                "neurons": [
+                    {
+                        "id": "B1",
+                        "activation": "logsig",
+                        "weights": [],
+                        "bias": 1
+                    }
+                ]
+            }
+        ]
+}
