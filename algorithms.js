@@ -4,7 +4,7 @@
 
 var NeuralMathLib = {
     "activations": function(active, value){
-    	var val = value._data[0];
+    	var val = value;
         switch(active){
 	    case "logsig":
 	        return 1 / (1+Math.exp(-val));

@@ -7,15 +7,42 @@
  * This is the brain for HAL. It contains the logic to create the hidden deep neural network
  */
 
-
-var OutputLayer = function(hiddenLayerArray) {
-	//TODO: Determine Gradient Descent to update weights and bias
+var NeuralNetwork = function(layers, id){
+	"use static";
+	
+	if(!Array.isArray(layers)){
+		layers = [layers]
+	}
+	
+	var count;
+	try{
+		count = layers.length;
+	} catch (e){
+		count = 0;
+	}
+	
+	this.NN = {
+		name: id || "",
+		layerCount: count,
+		layers: layers
+	};
 };
 
+NeuralNetwork.prototype.deleteLayer = function(id){}
 
-/*
-	The goal of backpropagation is to optimize the weights so that the neural network can learn how to correctly map arbitrary inputs to outputs.
-	y = (Σ(wx))+b
-	w is usually a number between -1 & 1 or 0 & 1
-	b = bias starts as 1 and is also weighted as bw (it's own w)
-*/
+
+var Custom_NN = function(obj) {
+	"use static";
+	
+	if(typeof obj === "undefined" || typeof obj === null){
+		alert("Error Loading Custom Neural Obj");
+		return false;
+	}
+	
+	this.NN = {
+		name: obj.name,
+		layers: layers
+	};
+};
+
+Custom_NN.prototype.deleteLayer = function(id){}

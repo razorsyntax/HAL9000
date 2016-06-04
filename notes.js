@@ -1,4 +1,4 @@
-var neuralNetwork = {
+var NeuralNetwork = {
         name: "HAL9000",
         layers: [ // array of layer objects
             {
@@ -47,23 +47,8 @@ var neuralNetwork = {
  *              -To add neurons to the layer
  *          deleteLayer("layerName")
  *              -Deletes specified layer and all contained neurons
- * 
- * 
- * 
- *      NeuronFunctions:
- *          Neuron(neuronObj or NFD)
- *              -Creates a single neuron instance
- *          updateNeuron(obj)
- *              -Updates neuron properties (activation, id)
- *          deleteNeuron("neuronID")
- *              -Deletes specified neuron by id
- * 
- * 
- * 
- *      NeuralNetworkFunctions:
- *          CreateNetwork(layerObj or layerArr or NFD)
- *              -Creates the Neural Network Obj
- * 
+
+ *
  * 
  * 
  *      LearningFunctions:
@@ -148,4 +133,12 @@ var neuralNetwork = {
  * 
  * 
  * 
- */
+ *
+ * var OutputLayer = function(hiddenLayerArray) {
+ * 	//TODO: Determine Gradient Descent to update weights and bias
+ * };
+	The goal of backpropagation is to optimize the weights so that the neural network can learn how to correctly map arbitrary inputs to outputs.
+	y = (Σ(wx))+b
+	w is usually a number between -1 & 1 or 0 & 1
+	b = bias starts as 1 and is also weighted as bw (it's own w)
+*/

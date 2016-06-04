@@ -12,17 +12,20 @@
  **/
  
 // A single neuron instance
-var Neuron = function(conditions){
+var Neuron = function(customNeuron, id){
     "use strict";
-    var w = (typeof conditions === "undefined") ? NeuralMathLib.randomGauss() : 1;
     
-     var obj = {
-        input: [1], //change this to reflect initial input
-        weights: [w],
+    this.id = id || "";
+    
+    var w = (typeof customNeuron === "undefined") ? NeuralMathLib.randomGauss() : 1;
+    
+    var defaultNeuron = {
+        input: [1], //this is determined by previous layer inputs
+        weights: [.5],
         bias:  1,
         activation: "logsig"
     };
-    this.obj = conditions || obj;
+    this.obj = customNeuron || defaultNeuron;
 };
 
 Neuron.prototype.feedForward = function(refined){
@@ -41,4 +44,8 @@ Neuron.prototype.feedForward = function(refined){
     var result = NeuralMathLib.activations(this.obj.activation, totalMAT); //activation function
     return result;
     //TODO: creates 1 output and sets the new weights and bias
+};
+
+Neuron.prototype.update = function(newProperties){
+    this.obj = newProperties || this.obj;
 };

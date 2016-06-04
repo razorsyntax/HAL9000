@@ -1,23 +1,54 @@
 /** 
  * This is the hidden layer where the neuron layers are stacked.
  * 
- * Takes an array of instance layers
+ * Takes an array of neurons and a name for the this layer
  */
 
-var HiddenLayer = function(){};
-HiddenLayer.prototype.initialize = function(layersArr){}
+var Layer = function (neuronArray, layerName) {
+  "use strict";
+
+  this.layerName = layerName || "";
+  
+  if(!Array.isArray(neuronArray)){
+    neuronArray = [neuronArray];
+  }
+  
+  try {
+    this.neuronCount = neuronArray.length;
+  } catch (e) {
+    this.neuronCount = 0;
+  }
+
+  this.neuronArray = neuronArray || [];
+};
 
 /**
- * Instance of a neuron layer. Create as many as needed
- * To get started, pass the following layer object to define its properties
- * {
- *    layerName: "", // A string name representing layer function, ie. Edge_Detection
- *    neuronCount: 0, // # of neurons in the layer,
- *    neurons: [], // the array of neurons to be used in this layer
- * }
+ * Specify a neuron object or call it empty and the function
+ * will create a generic instance
  */
-
-var InstanceLayer = function(){};
-InstanceLayer.prototype.initialize = function(layerObj){
-  //TODO: This sets up a neuron layer and its properties
+Layer.prototype.addNeuron = function (neuron) {
+  "use strict";
+  if (typeof neuron === "undefined") {
+    neuron = new Neuron();
+  }
+  this.neuronArray.push(neuron);
+  this.neuronCount++;
 };
+
+
+/**
+ * Deletes a Neuron by id string
+ */
+Layer.prototype.deleteNeuron = function(id){
+  "use strict";
+  var arr = this.neuronArray;
+  
+  for(let i=0;i<arr.length;i++){
+    if(arr[i].id === id){
+      arr.splice(i,1);
+      this.neuronArray = arr;
+      this.neuronCount--;
+      break;
+    }
+  }
+}
