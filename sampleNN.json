@@ -3,10 +3,10 @@
 */
 {
         "name": "HAL9000",
-        "layers": [ /* array of layer objects */
+        "layers": [
             {
                 "layer": "Edge_Detection",
-                "neurons": [ /* array of neuron objects */
+                "neurons": [
                     {
                         "id": "A1",
                         "activation": "tanh",
