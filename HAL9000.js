@@ -28,8 +28,7 @@ var NeuralNetwork = function(layers, id){
 	};
 };
 
-NeuralNetwork.prototype.deleteLayer = function(id){}
-
+NeuralNetwork.prototype.deleteLayer = function(id){};
 
 var Custom_NN = function(obj) {
 	"use static";
@@ -46,3 +45,13 @@ var Custom_NN = function(obj) {
 };
 
 Custom_NN.prototype.deleteLayer = function(id){}
+
+
+
+var Train = function(trainingDataArr, NN){};
+
+var Learn = function(inputArr, NN){};
+
+var StopLearning = function(){
+	return false;
+};

@@ -13,7 +13,19 @@ var NeuralMathLib = {
 	        var negN = Math.exp(-val); // e^(-n)
 	        return (posN - negN) / (posN + negN);
 	    case "linear":
-	        return val;
+	        return value;
+        case "satlin":
+            if(value < 0){
+                return 0;
+            }
+            
+            if(value >= 0 && value <= 1){
+                return value;
+            }
+            
+            if(value > 1){
+                return 1;
+            }
 	    case "arctan":
 	    	return Math.atan(val);
 	    case "gaussian":

@@ -1,26 +1,13 @@
 /**
- * Create separate file for JSON object of the network
- *      * This is used to pre-populate data
+ * First layer receives the input arr
+ * Subsequent layers recieve the previous layers output as input
  * 
-
- * 
- * 
- *      LearningFunctions:
- *          Train(data)
- *              -Pass training data to network
- *          Learn(neuralNetworkOBJ)
- *              -Initiates the learning process
- *              -This contains the main thinking loop
- *          StopLearning()
- *              -Stops the thinking loop
-
-
- *          Train the Network:
- *              Hal.Train(trainingDataArr, NN);
+ * // Layers recieve variable input
+ * // Layers output same number of outputs as neurons in that layer
+ *      // Layer with two neurons outputs an array of two outputs
+ * // Output is used to update the previous weights and bias 
  * 
  * 
- *          Let the Network Learn:
- *              Hal.Learn(input, NN);
  * 
  * 
  * 
