@@ -46,7 +46,7 @@ Methodology:
              |        /|\            |
             \|/        |            \|/
 Init Input --->   Hidden Layer  ->   Output Layer  |
-            /|\	    							  \|/
+            /|\	    				  \|/
 New Input -> |    Update WB's   <- Error Calculation
 
 1) Define Network
