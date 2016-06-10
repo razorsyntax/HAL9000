@@ -5,32 +5,51 @@
         "name": "HAL9000",
         "layers": [
             {
-                "layer": "Edge_Detection",
-                "neurons": [
+                "inputLayer": {
+                        "type": "input",
+                        "inputs": [1,0,0]
+                    },
+                "hiddenLayer": [
                     {
-                        "id": "A1",
-                        "activation": "tanh",
-                        "weights": [],
-                        "bias": 1
+                        "layerID": "A",
+                        "type": "hidden",
+                        "neurons": [
+                            {
+                                "id": "A1",
+                                "activation": "logsig"
+                            },
+                            {
+                                "id": "A2",
+                                "activation": "logsig"
+                            }
+                        ]
                     },
                     {
-                        "id": "A2",
-                        "activation": "tanh",
-                        "weights": [],
-                        "bias": 1
+                        "layerID": "B",
+                        "type": "hidden",
+                        "neurons": [
+                            {
+                                "id": "B1",
+                                "activation": "logsig"
+                            },
+                            {
+                                "id": "B2",
+                                "activation": "logsig"
+                            }
+                        ]
                     }
-                ]
-            },
-            {
-                "layer": "Obj_Detection",
-                "neurons": [
-                    {
-                        "id": "B1",
-                        "activation": "logsig",
-                        "weights": [],
-                        "bias": 1
-                    }
-                ]
-            }
-        ]
+                ],
+                "outputLayer": {
+                    "type":"output",
+                    "outputVector": []
+                }
+        }
+    ],
+    "targets": [0,1,0],
+    "wb": {
+        "A1": {"w":[0.7,0.8,0.3],"b":1},
+        "A2": {"w":[0.6,0.2,0.5],"b":0.2},
+        "B1": {"w":[0.3,0.7,0.4],"b":0.1},
+        "B2": {"w":[0.8,0.5,0.1],"b":0.5}
+    }
 }
