@@ -11,6 +11,7 @@
                     },
                 "hiddenLayer": [
                     {
+                        "name": "Edge_Detection",
                         "layerID": "A",
                         "type": "hidden",
                         "neurons": [
@@ -25,6 +26,7 @@
                         ]
                     },
                     {
+                        "name": "Obj_Detection",
                         "layerID": "B",
                         "type": "hidden",
                         "neurons": [

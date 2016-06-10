@@ -18,9 +18,9 @@ Create Network
 					-Hidden layer is an array of neurons objs
 					-Output layer is final layer & performs error calculations
 				-JSON:
-					{"id":1, "type": "input",  "items":[]}
-					{"id":2, "type": "hidden", "items":[{}]}
-					{"id":3, "type": "output", "items":[{}]}
+					{"id":1, "type": "input",  "neurons":[]}
+					{"name":"custName", "id":2, "type": "hidden", "neurons":[{}]}
+					{"id":3, "type": "output", "neurons":[{}]}
 					
 			-Actions
 				-distributes all inputs and outputs as vectors
@@ -75,20 +75,46 @@ Tools:
 	Set trained weights/bias for NN
 	Error calculations
 	Update weights/bias
-	
-	
-	
-{
-	"name": "HAL9000",
-	"Layers": {
-		"inputLayer": [],
-		"hiddenLayer":[{}],
-		"outputLayer": [{}]
-	},
-	"targets":[],
-	"wb": {
-		"id1": {"w":.7, "b":1},
-		"id2": {"w":.4, "b":.7}
-	}
-}
+
+
+//creates instance of NN obj
+var NN = new NeuralNetwork();
+
+//create neurons with activation attribute
+var node = new Neuron({
+	"activation":"logsig"
+});
+
+var node2 = new Neuron({
+	"activation":"logsig"
+});
+
+//create layer and give it attributes
+NN.createLayer({
+	"name": "Edge_Detection",
+	"neurons": [node,node2]
+});
+
+//set targets
+var targetArr = [1,0,1];
+NN.targets(targetArr);
+
+//this creates a JSON obj with all initial weights and biases in NN
+NN.initWB();
+
+
+//NN is now set for work
+
+var inputs = [1,1,1];
+
+//send the inputs through your network
+//you may also specify optional error threshold obj for when training should end 
+NN.Train(inputs, {"error":[0.6,0.7,0.5]});
+
+//test your network with new input data
+
+var testInput = [0,0,1];
+
+NN.Test(testInput);
+
 */
