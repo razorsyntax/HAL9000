@@ -117,4 +117,71 @@ var testInput = [0,0,1];
 
 NN.Test(testInput);
 
+
+
+
+
+==============================================
+
+//creates instance of NN obj
+var NN = new NeuralNetwork("HAL9000");
+
+
+//creates NN obj
+var NeuralNetwork = function(name){
+	this.name = name || "NN";
+	this.layers = [];
+	this.targets = [];
+	this.wb = {};
+};
+
+//creates new layer
+NeuralNetwork.prototype.createLayer = function(attr){
+	this.name = attr.name || "";
+	this.type = attr.type;
+	this.neurons = attr.neurons;
+};
+
+//sets training targets
+NeuralNetwork.prototype.targets = function(targets){
+	this.targets = targets;
+}
+
+NeuralNetwork.prototype.Train = function(inputs, errorOBJ) {
+	//counts number of inputs
+	//sets weights and biases with SetWB();
+	
+	//Calculate outputs for all layers
+		//Once to the output layers
+	//Calculate the errors of output neurons
+		//Change the output layer weights
+	//Calculate hidden layer errors (back prop)
+		//Change hidden layer weights
+	
+}
+
+
+
+
+//creates single neuron instance
+var Neuron = function(activation){
+	this.activation = activation || "logsig"
+};
+
+
+var hiddenLayerCal = function(NN){
+	var layers = NN.layers;
+	var wbs = NN.wb;
+	for(let i=0;i<layers.length;i++){
+		var neurons = layers[i].neurons;
+		for(let j=0;j<neurons.length;j++){
+			//sum weights and biases neurons[j];
+			
+		}
+	}
+}
+
+
+
+
 */
