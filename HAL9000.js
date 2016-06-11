@@ -7,44 +7,62 @@
  * This is the brain for HAL. It contains the logic to create the hidden deep neural network
  */
 
-var NeuralNetwork = function(layers, id){
-	"use static";
-	
-	if(!Array.isArray(layers)){
-		layers = [layers]
-	}
-	
-	var count;
-	try{
-		count = layers.length;
-	} catch (e){
-		count = 0;
-	}
-	
-	this.NN = {
-		name: id || "",
-		layerCount: count,
-		layers: layers
+//creates NN obj
+var NeuralNetwork = function(name){
+	this.name = name || "NN";
+	this.layers = {
+		"inputLayer":[],
+		"hiddenLayer":[],
+		"outputLayer":[]
 	};
+	this.targets = [];
+	this.wb = {};
 };
 
-NeuralNetwork.prototype.deleteLayer = function(id){};
+//creates new layer
+NeuralNetwork.prototype.createLayer = function(attr){
+	var layerID;
+	var layerCount = this.layers.hiddenLayer.length;
 
-var Custom_NN = function(obj) {
-	"use static";
-	
-	if(typeof obj === "undefined" || typeof obj === null){
-		alert("Error Loading Custom Neural Obj");
-		return false;
+	if(layerCount < 1){
+		layerID = "A";
+	} else{
+		layerID = utilities.nextletter(layerCount);
 	}
-	
-	this.NN = {
-		name: obj.name,
-		layers: layers
-	};
+
+	if(attr.neurons.length > 0){
+		for(let i=0;i<attr.neurons.length;i++){
+			attr.neurons[i].id = layerID + (i + 1).toString();
+		}
+	}
+
+	this.layers.hiddenLayer.push({
+		name: attr.name || "",
+		layerID: layerID,
+		type: attr.type,
+		neurons: attr.neurons,
+	});
 };
 
-Custom_NN.prototype.deleteLayer = function(id){}
+//sets training targets
+NeuralNetwork.prototype.setTarget = function(targets){
+	this.targets = targets;
+};
+
+
+
+NeuralNetwork.prototype.Train = function(inputs, errorOBJ) {
+	//counts number of inputs
+	//sets weights and biases with SetWB();
+	
+	//Calculate outputs for all layers
+		//Once to the output layers
+	//Calculate the errors of output neurons
+		//Change the output layer weights
+	//Calculate hidden layer errors (back prop)
+		//Change hidden layer weights
+	
+}
 
 
 

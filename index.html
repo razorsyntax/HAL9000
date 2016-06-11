@@ -5,14 +5,42 @@
 		<script type="text/javascript" src="algorithms.js"></script>
 		<script type="text/javascript" src="layer.js"></script>
 		<script type="text/javascript" src="neuron.js"></script>
+		<script type="text/javascript" src="utilities.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.2.1/math.min.js"></script>
 		
 	</head>
 	<body></body>
 	<script>
 		(function(){
+
+			//creates instance of NN obj
+			var NN = new NeuralNetwork("Hal9000");
+
+			//create neurons with activation attribute
+			var node = new Neuron({
+				"activation":"logsig"
+			});
+
+			var node2 = new Neuron({
+				"activation":"logsig"
+			});
+
+			//create layer and give it attributes
+			NN.createLayer({
+				"name": "Edge_Detection",
+				"type": "hidden",
+				"neurons": [node,node2]
+			});
+
+			//set targets
+			var targetArr = [1,0,1];
+			NN.setTarget(targetArr);
+			console.log(NN);
+			//this creates a JSON obj with all initial weights and biases in NN
+			//NN.initWB();
+
 			//          TESTING REGION          \\
-			/************************************/
+			/***********************************
 			// Uninitialized Neuron
 			var node = new Neuron();
 			node = node.feedForward();
@@ -36,7 +64,7 @@
 			node4 = node4.feedForward({input:[1,2,3], weights:[.6,.1,7], bias:.5});
 			console.log("Test 4\n");
 			console.log("Feed Forward: \n" + node4);
-			/************************************/
+			***********************************/
 
 		}).call(this);
 	</script>

@@ -11,21 +11,10 @@
  *          var node = new Neuron(obj);
  **/
  
-// A single neuron instance
-var Neuron = function(customNeuron, id){
-    "use strict";
-    
-    this.id = id || "";
-    
-    var w = (typeof customNeuron === "undefined") ? NeuralMathLib.randomGauss() : 1;
-    
-    var defaultNeuron = {
-        input: [1], //this is determined by previous layer inputs
-        weights: [.5],
-        bias:  1,
-        activation: "logsig"
-    };
-    this.obj = customNeuron || defaultNeuron;
+
+var Neuron = function(act){
+	this.activation = act.activation || "logsig",
+    this.id = ""
 };
 
 Neuron.prototype.feedForward = function(refined){
