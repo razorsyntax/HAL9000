@@ -51,6 +51,39 @@ NeuralNetwork.prototype.setTarget = function(targets){
 
 
 
+NeuralNetwork.prototype.init = function(numInputs){
+	//not correct... refactor
+	var keys = [];
+	var wb = {};
+	var w = [];
+	var b = 0;
+	var num;
+	var obj = {};
+	var arr = this.layers.hiddenLayer;
+	for(let i=0;i<arr.length;i++){
+		var neurons = arr[i].neurons;
+		for(let i=0;i<neurons.length;i++){
+			keys.push(neurons[i].id);
+		}
+	}
+	for(let i=0;i<keys.length;i++){
+		for(let i=0;i<numInputs.length;i++) {
+			num = NeuralMathLib.randomGauss();
+			w.push(num);
+		}
+		num = NeuralMathLib.randomGauss();
+		obj = {"w": w, "b": num};
+		wb[keys[i]] = obj;
+	}
+	this.wb = wb;
+};
+
+
+
+
+
+
+
 NeuralNetwork.prototype.Train = function(inputs, errorOBJ) {
 	//counts number of inputs
 	//sets weights and biases with SetWB();

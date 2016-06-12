@@ -12,7 +12,8 @@
 	<body></body>
 	<script>
 		(function(){
-
+			//          TESTING REGION          \\
+			/***********************************/
 			//creates instance of NN obj
 			var NN = new NeuralNetwork("Hal9000");
 
@@ -35,36 +36,15 @@
 			//set targets
 			var targetArr = [1,0,1];
 			NN.setTarget(targetArr);
-			console.log(NN);
+			
 			//this creates a JSON obj with all initial weights and biases in NN
-			//NN.initWB();
+			var inputs = [0,1,0];
+			NN.init(inputs);
 
-			//          TESTING REGION          \\
-			/***********************************
-			// Uninitialized Neuron
-			var node = new Neuron();
-			node = node.feedForward();
-			console.log("Test 1\n");
-			console.log("Default Initialization: \n" + node + "\n\n");
-			
-			// Initialized Neuron logsig
-			var node2 = new Neuron({input:[1,2,3], weights:[.4,.3,5], bias:1, activation:"logsig" });
-			node2 = node2.feedForward();
-			console.log("Test 2\n");
-			console.log("Activation logsig: \n" + node2 + "\n\n");
-			
-			// Initialized Neuron tanh
-			var node3 = new Neuron({input:[1,2,3], weights:[.4,.3,5], bias:1, activation:"tanh" });
-			node3 = node3.feedForward();
-			console.log("Test 3\n");
-			console.log("Activation tanh: \n" + node3 + "\n\n");
-			
-			// This represents the new weights and bias from gradient descent
-			var node4 = new Neuron();
-			node4 = node4.feedForward({input:[1,2,3], weights:[.6,.1,7], bias:.5});
-			console.log("Test 4\n");
-			console.log("Feed Forward: \n" + node4);
-			***********************************/
+			debugger;
+
+
+			/***********************************/
 
 		}).call(this);
 	</script>
