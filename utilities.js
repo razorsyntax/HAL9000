@@ -1,18 +1,13 @@
-var utilites = {
+var utilities = {
         "nextLetter": function(letter) {
-            var number = ReportModifier.FormulaTools.toNumbers(letter);
+            var number = utilities.toNumbers(letter);
             var nextLetter = number + 1;
-            return ReportModifier.FormulaTools.toLetters(nextLetter);
+            return utilities.toLetters(nextLetter);
         },
         "lastLetter": function(letter) {
-            var number = ReportModifier.FormulaTools.toNumbers(letter);
+            var number = utilities.toNumbers(letter);
             var nextLetter = number - 1;
-            var lastNumber = ReportModifier.FormulaTools.toLetters(nextLetter);
-
-            if (lastNumber === "?Z") {
-                //ReportModifier.Alerts("Letter out of Range");
-                return false;
-            }
+            var lastNumber = utilities.toLetters(nextLetter);
 
             return lastNumber;
         },
@@ -21,7 +16,7 @@ var utilites = {
             var mod = num % 26;
             var pow = num / 26 | 0;
             var out = mod ? String.fromCharCode(64 + mod) : (pow--, "Z");
-            return pow ? ReportModifier.FormulaTools.toLetters(pow) + out : out;
+            return pow ? utilities.toLetters(pow) + out : out;
         },
         "toNumbers": function(str) {
             "use strict";
