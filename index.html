@@ -26,11 +26,11 @@
 				"activation":"logsig"
 			});
 
-			//create layer and give it attributes
+			//create output layer and give it attributes
 			NN.createLayer({
-				"name": "Edge_Detection",
-				"type": "hidden",
-				"neurons": [node,node2]
+				"name": "MNIST",
+				"type": "output",
+				"neurons": [node3,node4]
 			});
 
 			//set targets
@@ -39,7 +39,10 @@
 			
 			//this creates a JSON obj with all initial weights and biases in NN
 			var inputs = [0,1,0];
-			NN.init(inputs);
+
+			Train(NN, inputs);
+			
+			
 
 			debugger;
 
