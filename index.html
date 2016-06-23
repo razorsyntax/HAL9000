@@ -14,31 +14,48 @@
 		(function(){
 			//          TESTING REGION          \\
 			/***********************************/
+			//Setting up an MNIST Neural Network
+
+
 			//creates instance of NN obj
 			var NN = new NeuralNetwork("Hal9000");
 
-			//create neurons with activation attribute
-			var node = new Neuron({
+			//create 15 hidden neurons with activation attribute
+			var neuronHidArr = [];
+			for(var i=0;i<15;i++){
+				neuronHidArr.push(new Neuron({
 				"activation":"logsig"
+				}));
+			}
+
+			//create hidden layer and give it attributes
+			NN.createLayer({
+				"name": "MNIST_Hidden",
+				"type": "hidden",
+				"neurons": neuronHidArr
 			});
 
-			var node2 = new Neuron({
+			//create 10 output neurons with activation attribute
+			var neuronOutArr = [];
+			for(var i=0;i<10;i++){
+				neuronOutArr.push(new Neuron({
 				"activation":"logsig"
-			});
-
+				}));
+			}
+			
 			//create output layer and give it attributes
 			NN.createLayer({
 				"name": "MNIST",
 				"type": "output",
-				"neurons": [node3,node4]
+				"neurons": neuronOutArr
 			});
 
 			//set targets
-			var targetArr = [1,0,1];
+			var targetArr = [0,0,0,1,0,0,0,0,0,0];
 			NN.setTarget(targetArr);
 			
 			//this creates a JSON obj with all initial weights and biases in NN
-			var inputs = [0,1,0];
+			var inputs = [0,0,0,1,0,0,0,0,0,0];
 
 			Train(NN, inputs);
 			
