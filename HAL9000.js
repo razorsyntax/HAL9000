@@ -59,13 +59,14 @@ NeuralNetwork.prototype.setTarget = function(targets){
 
 NeuralNetwork.prototype.init = function(numInputs){
     var keys = [];
-    var wb = {};
     var w = [];
+    var obj = {};
+    var wb = {};
     var b = 0;
     var num;
-    var obj = {};
     var hArr = this.layers.hiddenLayer;
     var oArr = this.layers.outputLayer.neurons;
+    
     for(let i=0;i<hArr.length;i++){
         var neurons = hArr[i].neurons;
         for(let i=0;i<neurons.length;i++){
@@ -82,8 +83,6 @@ NeuralNetwork.prototype.init = function(numInputs){
         wb[keys[i]] = obj;
         w = [];
     }
-
-	
 
     this.wb = wb;
 };
