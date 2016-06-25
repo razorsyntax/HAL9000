@@ -29,19 +29,23 @@ NeuralNetwork.prototype.createLayer = function(attr){
             	layerID = (layerCount < 1) ? "A": utilities.nextletter(layerCount);
 	
             	if(attr.neurons.length > 0){
-        	    for(let i=0;i<attr.neurons.length;i++){
-        	        attr.neurons[i].id = layerID + (i + 1).toString();
-        	    }
+        	        for(let i=0;i<attr.neurons.length;i++){
+        	            attr.neurons[i].id = layerID + (i + 1).toString();
+        	        }
             	}
 	
             	this.layers.hiddenLayer.push({
-        	    name: attr.name || "",
-        	    layerID: layerID,
-        	    type: attr.type,
-        	    neurons: attr.neurons,
+        	        name: attr.name || "",
+        	        layerID: layerID,
+        	        type: attr.type,
+        	        neurons: attr.neurons,
             	});
             	break;
             case "output":
+                for(let i=0;i<attr.neurons.length;i++){
+                    attr.neurons[i].id = "Output_" + (i+1);
+                }
+                
                 this.layers.outputLayer = {
                     type: attr.type,
                     neurons: attr.neurons,
@@ -66,9 +70,9 @@ NeuralNetwork.prototype.init = function(numInputs){
     var num;
     var hArr = this.layers.hiddenLayer;
     var oArr = this.layers.outputLayer.neurons;
-    
+    var neurons
     for(let i=0;i<hArr.length;i++){
-        var neurons = hArr[i].neurons;
+        neurons = hArr[i].neurons;
         for(let i=0;i<neurons.length;i++){
             keys.push(neurons[i].id);
         }
@@ -79,9 +83,24 @@ NeuralNetwork.prototype.init = function(numInputs){
             w.push(num);
         }
         num = NeuralMathLib.randomGauss();
-        obj = {"w": w, "b": num};
-        wb[keys[i]] = obj;
+        wb[keys[i]] = {"w": w, "b": num};
         w = [];
+    }
+    var numOutputsLastLayer = hArr[(hArr.length-1)].neurons.length;
+    
+    keys = [];
+    obj = {};
+    for(let i=0;i<oArr.length;i++){
+        neurons = oArr;
+        keys.push(neurons[i].id);
+    }
+    for(let i=0;i<keys.length;i++){
+        for(let i=0;i<numOutputsLastLayer;i++){
+            num = NeuralMathLib.randomGauss();
+            w.push(num);
+        }
+        wb[keys[i]] = {"w": w, "b": num};
+        w=[];
     }
 
     this.wb = wb;

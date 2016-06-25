@@ -9,7 +9,14 @@
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.2.1/math.min.js"></script>
 		
 	</head>
-	<body></body>
+	<body>
+		<div>
+			<div>
+				<div>Neural Network Object: </div>
+				<div id="NN"></div>
+			</div>
+		</div>
+	</body>
 	<script>
 		(function(){
 			//          TESTING REGION          \\
@@ -58,10 +65,11 @@
 			var inputs = [0,0,0,1,0,0,0,0,0,0];
 
 			Train(NN, inputs);
-			
-			
 
-			debugger;
+			var NN_string = JSON.stringify(NN);
+			var NNDOM = document.getElementById('NN').innerHTML = NN_string; 
+
+			//debugger;
 
 
 			/***********************************/
