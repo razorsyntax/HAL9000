@@ -17,24 +17,6 @@ var Neuron = function(act){
     this.id = ""
 };
 
-Neuron.prototype.feedForward = function(refined){
-    "use strict";
-    if(typeof refined !== "undefined"){
-        //refined contains the new bias and weights
-        this.obj.input = refined.input;
-        this.obj.weights = refined.weights;
-        this.obj.bias = refined.bias;
-    }
-    
-    var inputsMAT = math.matrix(this.obj.input);
-    var weightsMAT = math.matrix(this.obj.weights);
-    var sumMAT = math.multiply(inputsMAT, weightsMAT);//Σ(wx)
-    var totalMAT = math.add(sumMAT, this.obj.bias);//sumMAT + b
-    var result = NeuralMathLib.activations(this.obj.activation, totalMAT); //activation function
-    return result;
-    //TODO: creates 1 output and sets the new weights and bias
-};
-
 Neuron.prototype.update = function(newProperties){
     this.obj = newProperties || this.obj;
 };

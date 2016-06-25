@@ -87,7 +87,7 @@ NeuralNetwork.prototype.init = function(numInputs){
         w = [];
     }
     var numOutputsLastLayer = hArr[(hArr.length-1)].neurons.length;
-    
+
     keys = [];
     obj = {};
     for(let i=0;i<oArr.length;i++){
@@ -108,15 +108,46 @@ NeuralNetwork.prototype.init = function(numInputs){
 
 
 var Train = function(NN, inputs){
+    console.log("Initial Inputs: " + inputs + "\n");
+    var newInputs = [];
+    var initialInputs = inputs;
+    var activatedVal, id, wArr, neuron;
+    // initializing inputs
+    NN.init(initialInputs); 
+
+    // calculate Outputs
+    for(let i=0;i<NN.layers.hiddenLayer.length;i++){
+        inputs = (i === 0) ?  inputs : newInputs;
+
+        for(let j=0;j<NN.layers.hiddenLayer[i].neurons.length;j++){
+            id = NN.layers.hiddenLayer[i].neurons[j].id;
+            neuron = NN.layers.hiddenLayer[i].neurons.filter(function(obj){
+                return obj.id === id;
+            });
+            activatedVal = NeuralMathLib.activated(NN, id, neuron[0], inputs);
+            newInputs.push(activatedVal);
+        }
+    }
+
+    var outputArr = [];
+    for(let i=0;i<NN.layers.outputLayer.neurons.length;i++){
+        
+        id = NN.layers.outputLayer.neurons[i].id;
+        neuron = NN.layers.outputLayer.neurons.filter(function(obj){
+            return obj.id === "Output_" + (i+1);
+        });
+        activatedVal = NeuralMathLib.activated(NN, id, neuron[0], newInputs);
+        outputArr.push(activatedVal);
+    }
+    console.log("Output Layer Array " + outputArr + "\n");
+
+    var targets = math.matrix(NN.targets);
+
+    //Error Calculation
+    var errDiff = math.subtract(targets, outputArr);
+    console.log("Error of targets: " + errDiff + "\n");
 
 
-    NN.init(inputs); // setting hidden input wb's
-    debugger;
-	
-	//Calculate outputs for all layers
-		//Once to the output layers
-	//Calculate the errors of output neurons
-		//Change the output layer weights
 	//Calculate hidden layer errors (back prop)
 		//Change hidden layer weights
 };

@@ -6,35 +6,46 @@ var NeuralMathLib = {
     "activations": function(active, value){
     	var val = value;
         switch(active){
-	    case "logsig":
-	        return 1 / (1+Math.exp(-val));
-	    case "tanh":
-	        var posN = Math.exp(val);  // e^(n)
-	        var negN = Math.exp(-val); // e^(-n)
-	        return (posN - negN) / (posN + negN);
-	    case "linear":
-	        return value;
-        case "satlin":
-            if(value < 0){
-                return 0;
-            }
-            
-            if(value >= 0 && value <= 1){
-                return value;
-            }
-            
-            if(value > 1){
-                return 1;
-            }
-	    case "arctan":
-	    	return Math.atan(val);
-	    case "gaussian":
-	    	return Math.exp(-Math.pow(val,2)); // e^(-(x^2))
+	        case "logsig":
+	            return 1 / (1+Math.exp(-val));
+	        case "tanh":
+	            var posN = Math.exp(val);  // e^(n)
+	            var negN = Math.exp(-val); // e^(-n)
+	            return (posN - negN) / (posN + negN);
+	        case "linear":
+	            return value;
+            case "satlin":
+                if(value < 0){
+                    return 0;
+                }
+
+                if(value >= 0 && value <= 1){
+        	       return value;
+                }
+
+                if(value > 1){
+                    return 1;
+                }
+	        case "arctan":
+	        	return Math.atan(val);
+	        case "gaussian":
+	        	return Math.exp(-Math.pow(val,2)); // e^(-(x^2))
         }
     },
     "backpropagation": function(obj){
     	//determines gradient descent for weights and bias
     	return obj;
+    },
+    "activated": function(NN, id, neuron, inputs){
+        var val; // summed weighted val of neuron
+        var w = NN.wb[id].w; //wArr
+        var b = NN.wb[id].b;
+
+        var inputsMAT = math.matrix(inputs);
+        var weightsMAT = math.matrix(NN.wb[id].w);
+        var sumMAT = math.multiply(inputsMAT, weightsMAT);//Σ(wx)
+        var totalMAT = math.add(sumMAT, NN.wb[id].b);//sumMAT + b
+        return NeuralMathLib.activations(neuron.activation, totalMAT); //activation function
     },
     //Creates pseudo-random values between 0 & 1
     "randomGauss": function() { // Unable to find originator of this function
