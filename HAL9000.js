@@ -108,10 +108,10 @@ NeuralNetwork.prototype.init = function(numInputs){
 
 
 var Train = function(NN, inputs){
-    console.log("Initial Inputs: " + inputs + "\n");
+    console.log("Initial Inputs: \n" + inputs + "\n");
     var newInputs = [];
     var initialInputs = inputs;
-    var activatedVal, id, wArr, neuron;
+    var activatedVal, id, wArr, neuron, summed;
     // initializing inputs
     NN.init(initialInputs); 
 
@@ -124,29 +124,44 @@ var Train = function(NN, inputs){
             neuron = NN.layers.hiddenLayer[i].neurons.filter(function(obj){
                 return obj.id === id;
             });
-            activatedVal = NeuralMathLib.activated(NN, id, neuron[0], inputs);
+            summed = NeuralMathLib.summation(NN, id, inputs);
+            activatedVal = NeuralMathLib.activations(neuron[0], summed);
             newInputs.push(activatedVal);
         }
     }
 
     var outputArr = [];
+    var outputsums = [];
     for(let i=0;i<NN.layers.outputLayer.neurons.length;i++){
         
         id = NN.layers.outputLayer.neurons[i].id;
         neuron = NN.layers.outputLayer.neurons.filter(function(obj){
             return obj.id === "Output_" + (i+1);
         });
-        activatedVal = NeuralMathLib.activated(NN, id, neuron[0], newInputs);
+        summed = NeuralMathLib.summation(NN, id, newInputs);
+        outputsums.push(summed);
+        activatedVal = NeuralMathLib.activations(neuron[0], summed);
         outputArr.push(activatedVal);
     }
-    console.log("Output Layer Array " + outputArr + "\n");
-
-    var targets = math.matrix(NN.targets);
+    console.log("Output Layer Array: \n[" + outputArr + "]\n");
 
     //Error Calculation
-    var errDiff = math.subtract(targets, outputArr);
-    console.log("Error of targets: " + errDiff + "\n");
+    var errDiff = LossFunction(outputArr, NN.targets);
+    console.log("Error: \n" + errDiff + "\n");
+    
+    var deltaArr = [];
+    var delta;
+    for(let i=0;i<outputArr.length;i++) {
+    	delta = -1 * errDiff * Derivatives.dSig(outputsums[i]);
+    	deltaArr.push(delta);
+    }
+    console.log("Delta Output Layer Array: \n[" + deltaArr + "]\n");
 
+
+    
+
+
+    NeuralMathLib.backpropagation(NN, errDiff);
 
 	//Calculate hidden layer errors (back prop)
 		//Change hidden layer weights

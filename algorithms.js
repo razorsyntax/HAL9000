@@ -5,7 +5,7 @@
 var NeuralMathLib = {
     "activations": function(active, value){
     	var val = value;
-        switch(active){
+        switch(active.activation){
 	        case "logsig":
 	            return 1 / (1+Math.exp(-val));
 	        case "tanh":
@@ -32,20 +32,24 @@ var NeuralMathLib = {
 	        	return Math.exp(-Math.pow(val,2)); // e^(-(x^2))
         }
     },
-    "backpropagation": function(obj){
+    "backpropagation": function(NN, err){
     	//determines gradient descent for weights and bias
-    	return obj;
+        var learningRate = 0.5;
+
+
+
+        var wb = NN.wb;
+
+    	//return obj;
     },
-    "activated": function(NN, id, neuron, inputs){
-        var val; // summed weighted val of neuron
+    "summation": function(NN, id, inputs){
         var w = NN.wb[id].w; //wArr
         var b = NN.wb[id].b;
 
         var inputsMAT = math.matrix(inputs);
         var weightsMAT = math.matrix(NN.wb[id].w);
         var sumMAT = math.multiply(inputsMAT, weightsMAT);//Σ(wx)
-        var totalMAT = math.add(sumMAT, NN.wb[id].b);//sumMAT + b
-        return NeuralMathLib.activations(neuron.activation, totalMAT); //activation function
+        return math.add(sumMAT, NN.wb[id].b);//sumMAT + b;
     },
     //Creates pseudo-random values between 0 & 1
     "randomGauss": function() { // Unable to find originator of this function
@@ -63,3 +67,33 @@ var NeuralMathLib = {
         return num;
     }
 };
+
+var Derivatives = {
+    "dSig": function(val){
+        var sig = 1 / (1+Math.exp(-val));
+        return sig * (1 - sig);
+    }
+}
+
+var LossFunction = function(outputArr, targets){
+    targets = math.matrix(targets);
+    outputArr = math.matrix(outputArr);
+
+    var Diff = math.square(math.subtract(outputArr, targets));
+    console.log("" + Diff._data);
+    return Diff._data.reduce(function(previousValue, currentValue, currentIndex, array) {
+        return previousValue + currentValue * 0.5;
+    });
+}
+
+var dErrorFunction = function(wb) {
+
+}
+
+// eArr and array of errDiff from each training pass
+var MeanSquaredErr = function(eArr){
+    var err = eArr._data.reduce(function(previousValue, currentValue, currentIndex, array) {
+        return previousValue + currentValue * 0.5;
+    });
+    return (err/eArr.length) * 100;
+}
