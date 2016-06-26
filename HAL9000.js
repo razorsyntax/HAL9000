@@ -110,6 +110,8 @@ NeuralNetwork.prototype.init = function(numInputs){
 var Train = function(NN, inputs){
     console.log("Initial Inputs: \n" + inputs + "\n");
     var newInputs = [];
+    var hiddensums = [];
+    var hidLayerSums = [];
     var initialInputs = inputs;
     var activatedVal, id, wArr, neuron, summed;
     // initializing inputs
@@ -125,9 +127,11 @@ var Train = function(NN, inputs){
                 return obj.id === id;
             });
             summed = NeuralMathLib.summation(NN, id, inputs);
+            hiddensums.push(summed);
             activatedVal = NeuralMathLib.activations(neuron[0], summed);
             newInputs.push(activatedVal);
         }
+        hidLayerSums.push(hiddensums);
     }
 
     var outputArr = [];
@@ -156,6 +160,37 @@ var Train = function(NN, inputs){
     	deltaArr.push(delta);
     }
     console.log("Delta Output Layer Array: \n[" + deltaArr + "]\n");
+
+
+    gradArr =[];
+    deltaArr = math.matrix(deltaArr);
+    for(let i=0;i<hidLayerSums.length;i++){
+        for(let j=0;j<hidLayerSums[i].length;j++){ // 1 layer of sums
+            var hidsums = math.matrix(hidLayerSums[i]);
+            
+            var weightArr = [];
+            var len = NN.layers.hiddenLayer.length;
+            var layerID = NN.layers.hiddenLayer[len-1].layerID;
+
+            var nKeys = Object.keys(NN.wb);
+
+            var weightName = nKeys.filter(function(obj){
+                var pick = layerID + (j+1);
+                return obj === pick;
+            });
+
+            weightArr = math.matrix(NN.wb[layerID + (j+1)].w);
+
+            var del = math.multiply(deltaArr, weightArr);
+            //Calculate Gradient Array
+            gradArr.push(math.multiply(hidsums._data[j], del));
+        }
+        console.log("Gradient Array: \n[" + gradArr + "]\n");
+        
+
+
+
+    }
 
 
     
