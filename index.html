@@ -38,13 +38,8 @@
 			});
 
 			//create 10 output neurons with activation attribute
-			var neuronOutArr = [];
-			for(var i=0;i<10;i++){
-				neuronOutArr.push(new Neuron({
-					"activation":"logsig"
-				}));
-			}
-			
+			var neuronOutArr = NeuronArray(10, "logsig");
+
 			//create output layer and give it attributes
 			NN.createLayer({
 				"name": "MNIST",
