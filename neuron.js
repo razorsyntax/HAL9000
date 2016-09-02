@@ -20,3 +20,15 @@ var Neuron = function(act){
 Neuron.prototype.update = function(newProperties){
     this.obj = newProperties || this.obj;
 };
+
+var NeuronArray = function(actFunc, numNeurons) {
+    var neuronHidArr = [];
+    numNeurons = numNeurons || 0;
+    actFunc = actFunc || "logsig";
+    for(var i=0;i<numNeurons;i++){
+        neuronHidArr.push(new Neuron({
+            "activation":actFunc
+        }));
+    }
+    return neuronHidArr;
+};
