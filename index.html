@@ -28,12 +28,7 @@
 			var NN = new NeuralNetwork("Hal9000");
 
 			//create 15 hidden neurons with activation attribute
-			var neuronHidArr = [];
-			for(var i=0;i<15;i++){
-				neuronHidArr.push(new Neuron({
-					"activation":"logsig"
-				}));
-			}
+			var neuronHidArr = NeuronArray(15, "logsig");
 
 			//create hidden layer and give it attributes
 			NN.createLayer({
