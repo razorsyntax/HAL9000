@@ -21,7 +21,7 @@ Neuron.prototype.update = function(newProperties){
     this.obj = newProperties || this.obj;
 };
 
-var NeuronArray = function(actFunc, numNeurons) {
+var NeuronArray = function(numNeurons, actFunc) {
     var neuronHidArr = [];
     numNeurons = numNeurons || 0;
     actFunc = actFunc || "logsig";
