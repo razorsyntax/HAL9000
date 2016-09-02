@@ -22,13 +22,13 @@ Neuron.prototype.update = function(newProperties){
 };
 
 var NeuronArray = function(numNeurons, actFunc) {
-    var neuronHidArr = [];
+    var neuronArr = [];
     numNeurons = numNeurons || 0;
     actFunc = actFunc || "logsig";
     for(var i=0;i<numNeurons;i++){
-        neuronHidArr.push(new Neuron({
+        neuronArr.push(new Neuron({
             "activation":actFunc
         }));
     }
-    return neuronHidArr;
+    return neuronArr;
 };
