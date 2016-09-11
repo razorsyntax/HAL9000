@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<script type="text/javascript" src="HAL9000.js"></script>
-		<script type="text/javascript" src="algorithms.js"></script>
-		<script type="text/javascript" src="layer.js"></script>
-		<script type="text/javascript" src="neuron.js"></script>
-		<script type="text/javascript" src="utilities.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.2.1/math.min.js"></script>
-		
-		<script src="jquery.min.js"></script>
-		
-	</head>
-	<body>
+
+<head>
+	<script type="text/javascript" src="HAL9000.js"></script>
+	<script type="text/javascript" src="algorithms.js"></script>
+	<script type="text/javascript" src="layer.js"></script>
+	<script type="text/javascript" src="neuron.js"></script>
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.2.1/math.min.js"></script>
+	<script type="text/javascript" src="jquery.min.js"></script>
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.bundle.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js"></script>
+
+</head>
+
+<body>
+	<div>
 		<div>
-			<div>
-				<div>Neural Network Object: </div>
-				<div id="NN"></div>
-				<div id="error"></div>
-				<div id="output"></div>
+			<div style="max-width:400px;max-height:400px;">
+				<canvas id="myChart" width="400" height="400"></canvas>
 			</div>
+			<div id="NN"></div>
+			<div id="error"></div>
+			<div id="output"></div>
 		</div>
-	</body>
-	<script>
+	</div>
+</body>
+<script>
+		var ctx = document.getElementById("myChart");
+		
+
 		(function(){
 			//          TESTING REGION          \\
 			/***********************************/
@@ -31,7 +40,7 @@
 			//creates instance of NN obj
 			var NN = new NeuralNetwork("Hal9000");
 
-			//create 15 hidden neurons with activation attribute
+			//create n hidden neurons with activation attribute
 			var neuronHidArr = NeuronArray(4, "logsig");
 
 			//create hidden layer and give it attributes
@@ -41,7 +50,7 @@
 				"neurons": neuronHidArr
 			});
 
-			//create 10 output neurons with activation attribute
+			//create n output neurons with activation attribute
 			var neuronOutArr = NeuronArray(4, "logsig");
 
 			//create output layer and give it attributes
@@ -70,23 +79,62 @@
 			//Testing ONLY
 			$("#NN").data("network", NN);
 
+			var errorArr = [];
+			var count = [];
 			//Train NN with provided inputs
-			for(let i=0;i<100000;i++){
+			for(let i=0;i<1000;i++){
 				Train(NN, inputs, rate);
 
 				var rate = 0.5;
 				var inputs = [0,0,0,1];
 				//var inputs = [0,1];
 				NN = $("#NN").data("network");
-				var error = $("#error").data("error");
+				error = $("#error").data("error");
+				errorArr.push(error);
 				var outputArr = $("#output").data("output");
+				count.push(i);
 			}
 			console.log("Error: " + error);
 			console.log("Final Ouput: " + outputArr);
 
+			var chartAttributes = {
+		    	type: 'line',
+		    	data: {
+					labels: count,
+					datasets: [
+						{
+							label: "Training Error",
+							fill: false,
+							lineTension: 0.1,
+							backgroundColor: "rgba(75,192,192,0.4)",
+            				borderColor: "rgba(75,192,192,1)",
+            				borderCapStyle: 'butt',
+            				borderDash: [],
+            				borderDashOffset: 0.0,
+            				borderJoinStyle: 'miter',
+            				pointBorderColor: "rgba(75,192,192,1)",
+            				pointBackgroundColor: "#fff",
+            				pointBorderWidth: 1,
+            				pointHoverRadius: 5,
+            				pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            				pointHoverBorderColor: "rgba(220,220,220,1)",
+            				pointHoverBorderWidth: 2,
+            				pointRadius: 1,
+            				pointHitRadius: 10,
+            				data: errorArr,
+            				spanGaps: true,
+						}
+					]
+				},
+ 		   		options: {}
+			};
+
+
+			var myChart = new Chart(ctx, chartAttributes);
 
 			/***********************************/
 
 		}).call(this);
 	</script>
+
 </html>
