@@ -137,20 +137,9 @@ var Train = function (NN, inputs, rate) {
     var errDiff = LossFunction(activatedOutputArr, NN.targets);
     //console.log("Total Error of the Output Layer: \n" + errDiff + "\n");
     $("#error").data("error", errDiff);
-    // **** TODO: Syphon this off to the View and graph to see how this changes over time ****
-    //Note: errDiff isn't used in any further calculations
 
     //Backpropogation for Output weights
-    //var newOutputWeightArr = 
-    NeuralMathLib.backpropagation(inputs, NN, activatedOutputArr, lastLayerInputs, rate);
-    //console.log("Last Layer Weights: \n" + newOutputWeightArr + "\n");
-    
-
-
-    //construct new json obj with new output weights and store it
-
-
-    
+    NeuralMathLib.backpropagation(inputs, NN, activatedOutputArr, lastLayerInputs, rate);    
 };
 
 var Learn = function (inputArr, NN) { };
