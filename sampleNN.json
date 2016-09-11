@@ -17,11 +17,13 @@
                         "neurons": [
                             {
                                 "id": "A1",
-                                "activation": "logsig"
+                                "activation": "logsig",
+                                "wb": {"w":[0.7,0.8,0.3],"b":1}
                             },
                             {
                                 "id": "A2",
-                                "activation": "logsig"
+                                "activation": "logsig",
+                                "wb": {"w":[0.6,0.2,0.5],"b":0.2}
                             }
                         ]
                     },
@@ -32,28 +34,34 @@
                         "neurons": [
                             {
                                 "id": "B1",
-                                "activation": "logsig"
+                                "activation": "logsig",
+                                "wb": {"w":[0.3,0.7,0.4],"b":0.1}
                             },
                             {
                                 "id": "B2",
-                                "activation": "logsig"
+                                "activation": "logsig",
+                                "wb": {"w":[0.8,0.5,0.1],"b":0.5}
                             }
                         ]
                     }
                 ],
                 "outputLayer": {
+                    "layerID": "output",
                     "type":"output",
-                    "neurons": []
+                    "neurons": [
+                        {
+                            "id": "Output_1",
+                            "activation": "logsig",
+                            "wb": {"w":[0.7,0.8,0.3],"b":1}
+                        },
+                        {
+                            "id": "Output_2",
+                            "activation": "logsig",
+                            "wb": {"w":[0.6,0.2,0.5],"b":0.2}
+                        }
+                    ]
                 }
         }
     ],
-    "targets": [0,1,0],
-    "wb": {
-        "A1": {"w":[0.7,0.8,0.3],"b":1},
-        "A2": {"w":[0.6,0.2,0.5],"b":0.2},
-        "B1": {"w":[0.3,0.7,0.4],"b":0.1},
-        "B2": {"w":[0.8,0.5,0.1],"b":0.5},
-        "Output_1": {"w":[0.7,0.8,0.3],"b":1},
-        "Output_2": {"w":[0.6,0.2,0.5],"b":0.2}
-    }
+    "targets": [0,1,0]
 }

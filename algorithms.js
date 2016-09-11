@@ -53,7 +53,7 @@ var NeuralMathLib = {
                     });
             }
 
-            summed = NeuralMathLib.summation(NN, id, inputs);
+            summed = NeuralMathLib.summation(neuronArr[j].wb, inputs);
 
             sums.push(summed);
             activatedVal = NeuralMathLib.activations(neuron[0], summed);
@@ -62,111 +62,112 @@ var NeuralMathLib = {
 
         return { "activated": activatedLayerArr, "sums": sums };
     },
-    "backpropagation": function (inputs, NN, activatedOutputArr, lastLayerInputs, rate) {
-        var outputWBs = [];
-        for (let i = 0; i < inputs.length; i++) {
-            var wb = NN.wb["Output_" + (i + 1)];
-            for (var j = 0; j < wb.w.length; j++) {
-                outputWBs.push(wb.w[j]);
-            }
-        }
+    "backpropagation": function (inputs, NN, activatedOutputArr, activatedHiddenArr, rate) {
 
-        //Delta Calcs for Output weights
-        var deltaArr = [];
+        ///////// Output Layer Calculations
+        //
+        var layerLen = activatedHiddenArr.length;
+        lastLayerInputs = activatedHiddenArr[layerLen-1]; //Last layer of hidden network
 
-        for (let i = 0; i < activatedOutputArr.length; i++) {
-            var delta = -1 * (NN.targets[i] - activatedOutputArr[i]) * (activatedOutputArr[i] * (1 - activatedOutputArr[i]));
-            deltaArr.push(delta);
-        }
+        var outputs = NeuralMathLib.FinalOutputWeightCalcs(activatedOutputArr, lastLayerInputs, rate, NN);
+        
+        var outputWBs = outputs.outputWBs;
+        var finalDeltaArr = outputs.finalDeltaArr;
+        var NN = outputs.NN;
+        var newOutputWeightArr = outputs.newOutputWeightArr;
 
-        var finalDeltaArr = [];
-        for (let i = 0; i < deltaArr.length; i++) {
-            var delta = deltaArr[i];
-            for (var j = 0; j < lastLayerInputs.length; j++) {
-                var delWeight = delta * lastLayerInputs[j];
-                finalDeltaArr.push(rate * delWeight);
-            }
-        }
 
-        //Calculates the new weights for the previous layer
-        var newOutputWeightArr = [];
-        for (let i = 0; i < outputWBs.length; i++) {
-            newOutputWeightArr.push(outputWBs[i] - finalDeltaArr[i]);
-        }
+        ///////// Hidden Layer Calculations
+        //
 
         var prevLayerWBs = [];
+        var prevLayerHolder = [];
+        var last = NN.layers.hiddenLayer.length - 1;
+        var lastLayer = NN.layers.hiddenLayer[last];
         for (let i = 0; i < inputs.length; i++) {
-            var wb = NN.wb["A" + (i + 1)]; //TODO: Update this to take last in hidden layer
+            var wb = lastLayer.neurons[i].wb;
+            //var wb = NN.wb["A" + (i + 1)]; //TODO: Update this to take last in hidden layer
             for (var j = 0; j < wb.w.length; j++) {
-                prevLayerWBs.push(wb.w[j]);
+                prevLayerHolder.push(wb.w[j]);
             }
+            prevLayerWBs.push(prevLayerHolder);
+            prevLayerHolder = [];
         }
+
 
         //use weights from output layer in first round
-        var arr = [];
+        var total = NeuralMathLib.eTotal(prevLayerWBs, finalDeltaArr);
 
-        for (let i = 0; i < prevLayerWBs.length; i++) {
-            for (let j = 0; j < finalDeltaArr.length; j++) {
-                arr.push(finalDeltaArr[j] * prevLayerWBs[i]);
-            }
-        }
 
-        var reducing = function (total, num) {
-            return total + num;
-        };
-        var total = arr.reduce(reducing);
-
+        var derivative = [];
         var derivatives = [];
         var derivativeArr = [];
         for (let i = 0; i < prevLayerWBs.length; i++) {
-            var derivative = prevLayerWBs[i] * (1 - prevLayerWBs[i]);
+            for (let j = 0; j < prevLayerWBs[i].length; j++) {
+                derivative.push(prevLayerWBs[i][j] * (1 - prevLayerWBs[i][j]));
+            }
             derivativeArr.push(derivative);
             derivatives.push(derivative);
+            derivative = [];
         }
 
-        //cut derivativeArr into neuron groups
-        var neuronGroup = [];
-        var group;
-        var holder = derivativeArr;
-        for(let i = 0;i<inputs.length;i++){
-            group = holder.splice(0,inputs.length);
-            neuronGroup.push(group);
-        }
-        
         //Final weight calculation
+        //Do this once the first layer is reached
         var finalWeightArr = [];
+        var finalWeightArrHolder = [];
         for (let i = 0; i < inputs.length; i++) {
-            for (let j = 0; j < neuronGroup.length; j++) {
-                var almostWeight = total * neuronGroup[i][j] * inputs[i];
-                var finalWeight = prevLayerWBs[i] - (rate * almostWeight);
-                finalWeightArr.push(finalWeight);
+            for (let j = 0; j < derivatives.length; j++) {
+                var almostWeight = total * derivatives[i][j] * inputs[i];
+                var finalWeight = prevLayerWBs[i][j] - (rate * almostWeight);
+                finalWeightArrHolder.push(finalWeight);
             }
-        }
-        //console.log("Final Weights in this layer: \n" + finalWeightArr + "\n");
-        
-        var finalOutputWeight = [];
-        var temp;
-        holder = newOutputWeightArr;
-        for(let i=0;i<inputs.length;i++){
-            var temp = holder.splice(0,inputs.length);
-            finalOutputWeight.push(temp);
-        }
-        
-        var finalWeight = [];
-        var temp;
-        holder = finalWeightArr;
-        for(let i=0;i<inputs.length;i++){
-            var temp = holder.splice(0,inputs.length);
-            finalWeight.push(temp);
+            finalWeightArr.push(finalWeightArrHolder);
+            finalWeightArrHolder = [];
         }
 
+        var finalOutputWeight = newOutputWeightArr;
         //update all weights in previous layer
-        UpdateWeights(finalWeight, finalOutputWeight, NN);
+        UpdateWeights(finalWeightArr, finalOutputWeight, NN);
 
     },
-    "summation": function (NN, id, inputs) {
-        var w = NN.wb[id].w; //wArr
-        var b = NN.wb[id].b;
+    "FinalOutputWeightCalcs": function (activatedOutputArr, lastLayerInputs, rate, NN) {
+        var outputWBs = [];
+        var delHolder = [];
+        var finalDeltaArr = [];
+
+        var oArr = NN.layers.outputLayer.neurons;
+        //Get Output Layer weights for each output neuron
+        for (let i = 0; i < oArr.length; i++) {
+            outputWBs.push(oArr[i].wb.w)
+        }
+
+        for (let i = 0; i < activatedOutputArr.length; i++) {
+            //delta = -(targetOutput - actualOutput) * (actualOutput * (1 - actualOutput))
+            var delta = -1 * (NN.targets[i] - activatedOutputArr[i]) * Derivatives.dSig(activatedOutputArr[i]);
+            for (var j = 0; j < lastLayerInputs.length; j++) {
+                delHolder.push(rate * delta * lastLayerInputs[j]);
+            }
+            finalDeltaArr.push(delHolder);
+            delHolder = [];
+        }
+
+        var newOutputWeightArr = [];
+        var nowaHolder = [];
+        for (let i = 0; i < outputWBs.length; i++) {
+            for (let j = 0; j < outputWBs[i].length; j++) {
+                nowaHolder.push(outputWBs[i][j] - finalDeltaArr[i][j]);
+            }
+            newOutputWeightArr.push(nowaHolder);
+            nowaHolder = [];
+        }
+
+        return { "outputWBs": outputWBs, "finalDeltaArr": finalDeltaArr, "NN": NN, "newOutputWeightArr": newOutputWeightArr };
+    },
+    "summation": function (wbObj, inputs) {
+        var w = wbObj.w;
+        var b = wbObj.b;
+        // var w = NN.wb[id].w; //wArr
+        // var b = NN.wb[id].b;
 
         var inputsMAT = math.matrix(inputs);
         var weightsMAT = math.matrix(w);
@@ -187,13 +188,31 @@ var NeuralMathLib = {
             num = 1 / num;
         }
         return num;
+    },
+    "eTotal": function(prevLayerWBs, finalDeltaArr){
+         var arr = [];
+        var arrHolder = [];
+        for (let i = 0; i < prevLayerWBs.length; i++) {
+            for (let j = 0; j < finalDeltaArr.length; j++) {
+                arrHolder.push(finalDeltaArr[i][j] * prevLayerWBs[i][j]);
+            }
+            arr.push(arrHolder);
+            arrHolder = [];
+        }
+
+        var merged = [].concat.apply([], arr);
+
+        var reducing = function (total, num) {
+            return total + num;
+        };
+        return total = merged.reduce(reducing);
     }
 };
 
 var Derivatives = {
     "dSig": function (val) {
-        var sig = 1 / (1 + Math.exp(-val));
-        return sig * (1 - sig);
+        //var sig = 1 / (1 + Math.exp(-val));
+        return val * (1 - val);
     }
 }
 
@@ -218,22 +237,35 @@ var MeanSquaredErr = function (eArr) {
     return (err / eArr.length) * 100;
 }
 
-var UpdateWeights = function(finalWeightArr, newOutputWeightArr, NN){    
+var UpdateWeights = function (finalWeightArr, newOutputWeightArr, NN) {
     var output, bias, obj;
-    //update weights from hidden layer
-    for(let i=0;i<finalWeightArr.length;i++){
-        output = NN.wb["A" + (i+1)];
-        bias = output.b;
-        obj = {"w": finalWeightArr[i], "b":bias};
-        NN.wb["A" + (i+1)] = obj;
-    }
 
     //update output array weights
-    for(let i=0;i<newOutputWeightArr.length;i++){
-        output = NN.wb["Output_" + (i + 1)];
-        bias = output.b;
-        obj = {"w": newOutputWeightArr[i], "b":bias};
-        NN.wb["Output_" + (i+1)] = obj;
+    for (let i = 0; i < newOutputWeightArr.length; i++) {
+        NN.layers.outputLayer.neurons[i].wb.w = newOutputWeightArr[i];
+        //NN.layers.outputLayer.neurons[i].wb.b = ####;
     }
     $("#NN").data("network", NN);
+
+    //update weights from hidden layer
+    //var last = NN.layers.hiddenLayer.length;
+    //var lastLayer = last[last-1];
+    for (let i = 0; i < finalWeightArr.length; i++) {
+        var hLayer = NN.layers.hiddenLayer[i];
+        if (typeof hLayer === undefined) {
+            for (let j = 0; j < hLayer.neurons.length; j++) {
+                hLayer.neurons[j].wb.w = finalWeightArr[j];
+                //hLayer.neuron[i].wb.b = ####;
+            }
+        }
+    }
+}
+
+var randomValues = function (inputs) {
+
+    var valArr = [];
+    for (let i = 0; i < inputs.length; i++) {
+        valArr.push(NeuralMathLib.randomGauss());
+    }
+    return valArr;
 }

@@ -33,5 +33,10 @@ var utilities = {
                 out += (str.charCodeAt(pos) - 64) * Math.pow(26, len - 1 - pos);
             }
             return out;
+        },
+        "getNextLayer": function(){},
+        "getPreviousLayer": function(currentLayer){
+            //if it has "Output"
+            //grab 
         }
 };

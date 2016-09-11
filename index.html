@@ -41,24 +41,21 @@
 			//creates instance of NN obj
 			var NN = new NeuralNetwork("Hal9000");
 
-			//create n hidden neurons with activation attribute
-			var neuronHidArr = NeuronArray(4, "logsig");
-
-			//create hidden layer and give it attributes
-			NN.createLayer({
-				"name": "MNIST_Hidden",
+			//layer attributes with automatic neuron generation
+			var layerAttributes = {
+				"name": "HiddenLayer",
 				"type": "hidden",
-				"neurons": neuronHidArr
-			});
+				"neurons": NeuronArray(4, "logsig")
+			};
+			//create n hidden neurons with activation attributes
+			NN.createLayer(2, layerAttributes);
 
-			//create n output neurons with activation attribute
-			var neuronOutArr = NeuronArray(4, "logsig");
 
 			//create output layer and give it attributes
 			NN.createLayer({
 				"name": "MNIST",
 				"type": "output",
-				"neurons": neuronOutArr
+				"neurons": NeuronArray(4, "logsig")
 			});
 
 			//set target array
