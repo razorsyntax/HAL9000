@@ -1,7 +1,7 @@
 # HAL9000
 JavaScript based Neural Network 
 
-(This contains the preliminary work and isn't currently useable.)
+This network works but it's shaky at the moment.  Check the Index.html for testing regime.
 
 ###### The idea behind this Neural Network is ease of use and customization. The toolset will grow over time.
 
