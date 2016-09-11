@@ -4,206 +4,157 @@
  * Email: david@biomance.com
  * Released under MIT License 
  * 
- * This is the brain for HAL. It contains the logic to create the hidden deep neural network
+ * This is the brain for HAL. It contains the logic to create the neural network
  */
 
 //creates NN obj
-var NeuralNetwork = function(name){
-        this.name = name || "NN";
-        this.layers = {
-                "inputLayer":[],
-                "hiddenLayer":[],
-                "outputLayer":[]
-        };
-        this.targets = [];
-        this.wb = {};
+var NeuralNetwork = function (name) {
+    this.name = name || "NN";
+    this.layers = {
+        "inputLayer": [],
+        "hiddenLayer": [],
+        "outputLayer": []
+    };
+    this.targets = [];
+    this.wb = {};
 };
 
 //creates new layer
-NeuralNetwork.prototype.createLayer = function(attr){
-        var layerID;
+NeuralNetwork.prototype.createLayer = function (attr) {
+    switch (attr.type) {
+        case "hidden":
+            var layerID;
+            var layerCount = this.layers.hiddenLayer.length;
+            layerID = (layerCount < 1) ? "A" : utilities.nextletter(layerCount);
 
-        switch(attr.type){
-            case "hidden":
-            	var layerCount = this.layers.hiddenLayer.length;
-            	layerID = (layerCount < 1) ? "A": utilities.nextletter(layerCount);
-	
-            	if(attr.neurons.length > 0){
-        	        for(let i=0;i<attr.neurons.length;i++){
-        	            attr.neurons[i].id = layerID + (i + 1).toString();
-        	        }
-            	}
-	
-            	this.layers.hiddenLayer.push({
-        	        name: attr.name || "",
-        	        layerID: layerID,
-        	        type: attr.type,
-        	        neurons: attr.neurons,
-            	});
-            	break;
-            case "output":
-                for(let i=0;i<attr.neurons.length;i++){
-                    attr.neurons[i].id = "Output_" + (i+1);
+            if (attr.neurons.length > 0) {
+                for (let i = 0; i < attr.neurons.length; i++) {
+                    attr.neurons[i].id = layerID + (i + 1).toString();
                 }
-                
-                this.layers.outputLayer = {
-                    type: attr.type,
-                    neurons: attr.neurons,
-                }
-                break;
-        }
+            }
+
+            this.layers.hiddenLayer.push({
+                name: attr.name || "",
+                layerID: layerID,
+                type: attr.type,
+                neurons: attr.neurons,
+            });
+            break;
+        case "output":
+            for (let i = 0; i < attr.neurons.length; i++) {
+                attr.neurons[i].id = "Output_" + (i + 1);
+            }
+
+            this.layers.outputLayer = {
+                type: attr.type,
+                neurons: attr.neurons,
+            }
+            break;
+    }
 };
 
 //sets training targets
-NeuralNetwork.prototype.setTarget = function(targets){
+NeuralNetwork.prototype.setTarget = function (targets) {
     this.targets = targets;
 };
 
 
-
-NeuralNetwork.prototype.init = function(numInputs){
+//Creates a JSON obj with all initial weights and biases in NN
+NeuralNetwork.prototype.init = function (numInputs) {
     var keys = [];
     var w = [];
-    var obj = {};
     var wb = {};
     var b = 0;
-    var num;
+    var num, neurons;
     var hArr = this.layers.hiddenLayer;
     var oArr = this.layers.outputLayer.neurons;
-    var neurons
-    for(let i=0;i<hArr.length;i++){
+
+    for (let i = 0; i < hArr.length; i++) {
         neurons = hArr[i].neurons;
-        for(let i=0;i<neurons.length;i++){
+        for (let i = 0; i < neurons.length; i++) {
             keys.push(neurons[i].id);
         }
     }
-    for(let i=0;i<keys.length;i++){
-        for(let j=0;j<numInputs.length;j++) {
+    for (let i = 0; i < keys.length; i++) {
+        //setting weights
+        for (let j = 0; j < numInputs.length; j++) {
             num = NeuralMathLib.randomGauss();
             w.push(num);
         }
+        //setting bias
         num = NeuralMathLib.randomGauss();
-        wb[keys[i]] = {"w": w, "b": num};
+        wb[keys[i]] = { "w": w, "b": num };
         w = [];
     }
-    var numOutputsLastLayer = hArr[(hArr.length-1)].neurons.length;
+    var numOutputsLastLayer = hArr[(hArr.length - 1)].neurons.length;
 
     keys = [];
-    obj = {};
-    for(let i=0;i<oArr.length;i++){
+    for (let i = 0; i < oArr.length; i++) {
         neurons = oArr;
         keys.push(neurons[i].id);
     }
-    for(let i=0;i<keys.length;i++){
-        for(let i=0;i<numOutputsLastLayer;i++){
+    for (let i = 0; i < keys.length; i++) {
+        for (let i = 0; i < numOutputsLastLayer; i++) {
             num = NeuralMathLib.randomGauss();
             w.push(num);
         }
-        wb[keys[i]] = {"w": w, "b": num};
-        w=[];
+        wb[keys[i]] = { "w": w, "b": num };
+        w = [];
     }
 
     this.wb = wb;
 };
 
 
-var Train = function(NN, inputs){
-    console.log("Initial Inputs: \n" + inputs + "\n");
+var Train = function (NN, inputs, rate) {
+    //console.log("Initial Inputs: \n" + inputs + "\n");
     var newInputs = [];
-    var hiddensums = [];
-    var hidLayerSums = [];
-    var initialInputs = inputs;
+    var activatedOutputArr = [];
+    var sumsOFAllLayers = [];
     var activatedVal, id, wArr, neuron, summed;
-    // initializing inputs
-    NN.init(initialInputs); 
 
-    // calculate Outputs
-    for(let i=0;i<NN.layers.hiddenLayer.length;i++){
-        inputs = (i === 0) ?  inputs : newInputs;
+    //Calculate Activated Hidden Layer Outputs
+    for (let i = 0; i < NN.layers.hiddenLayer.length; i++) {
+        var neuronHidArr = NN.layers.hiddenLayer[i].neurons;
+        var activatedHiddenObj = NeuralMathLib.activatedLayer(NN, neuronHidArr, inputs, "hidden");
 
-        for(let j=0;j<NN.layers.hiddenLayer[i].neurons.length;j++){
-            id = NN.layers.hiddenLayer[i].neurons[j].id;
-            neuron = NN.layers.hiddenLayer[i].neurons.filter(function(obj){
-                return obj.id === id;
-            });
-            summed = NeuralMathLib.summation(NN, id, inputs);
-            hiddensums.push(summed);
-            activatedVal = NeuralMathLib.activations(neuron[0], summed);
-            newInputs.push(activatedVal);
-        }
-        hidLayerSums.push(hiddensums);
+        activatedHiddenArr = activatedHiddenObj.activated; //inputs for next layer
+        sumsOFAllLayers.push(activatedHiddenObj); //storing activated inputs & sums from layers for later
+        inputs = activatedHiddenArr;
     }
-
-    var outputArr = [];
-    var outputsums = [];
-    for(let i=0;i<NN.layers.outputLayer.neurons.length;i++){
-        
-        id = NN.layers.outputLayer.neurons[i].id;
-        neuron = NN.layers.outputLayer.neurons.filter(function(obj){
-            return obj.id === "Output_" + (i+1);
-        });
-        summed = NeuralMathLib.summation(NN, id, newInputs);
-        outputsums.push(summed);
-        activatedVal = NeuralMathLib.activations(neuron[0], summed);
-        outputArr.push(activatedVal);
-    }
-    console.log("Output Layer Array: \n[" + outputArr + "]\n");
-
-    //Error Calculation
-    var errDiff = LossFunction(outputArr, NN.targets);
-    console.log("Error: \n" + errDiff + "\n");
     
-    var deltaArr = [];
-    var delta;
-    for(let i=0;i<outputArr.length;i++) {
-    	delta = -1 * errDiff * Derivatives.dSig(outputsums[i]);
-    	deltaArr.push(delta);
-    }
-    console.log("Delta Output Layer Array: \n[" + deltaArr + "]\n");
+    //Calculate Activated Output Layers
+    lastLayerInputs = activatedHiddenArr; //Last layer of hidden network
+    var neuronOutArr = NN.layers.outputLayer.neurons;
+    var activatedOutputObj = NeuralMathLib.activatedLayer(NN, neuronOutArr, lastLayerInputs, "output");
+    var unactivatedOutputSums = activatedOutputObj.sums; //pre-activated net sums of output array
 
+    activatedOutputArr = activatedOutputObj.activated;
+    //console.log("Activated Output Layer Array: \n[" + activatedOutputArr + "]\n");
+    $("#output").data("output", activatedOutputArr);
 
-    gradArr =[];
-    deltaArr = math.matrix(deltaArr);
-    for(let i=0;i<hidLayerSums.length;i++){
-        for(let j=0;j<hidLayerSums[i].length;j++){ // 1 layer of sums
-            var hidsums = math.matrix(hidLayerSums[i]);
-            
-            var weightArr = [];
-            var len = NN.layers.hiddenLayer.length;
-            var layerID = NN.layers.hiddenLayer[len-1].layerID;
+    //Total Error Calculation of the Output Layer
+    var errDiff = LossFunction(activatedOutputArr, NN.targets);
+    //console.log("Total Error of the Output Layer: \n" + errDiff + "\n");
+    $("#error").data("error", errDiff);
+    // **** TODO: Syphon this off to the View and graph to see how this changes over time ****
+    //Note: errDiff isn't used in any further calculations
 
-            var nKeys = Object.keys(NN.wb);
-
-            var weightName = nKeys.filter(function(obj){
-                var pick = layerID + (j+1);
-                return obj === pick;
-            });
-
-            weightArr = math.matrix(NN.wb[layerID + (j+1)].w);
-
-            var del = math.multiply(deltaArr, weightArr);
-            //Calculate Gradient Array
-            gradArr.push(math.multiply(hidsums._data[j], del));
-        }
-        console.log("Gradient Array: \n[" + gradArr + "]\n");
-        
-
-
-
-    }
-
-
+    //Backpropogation for Output weights
+    //var newOutputWeightArr = 
+    NeuralMathLib.backpropagation(inputs, NN, activatedOutputArr, lastLayerInputs, rate);
+    //console.log("Last Layer Weights: \n" + newOutputWeightArr + "\n");
     
 
 
-    NeuralMathLib.backpropagation(NN, errDiff);
+    //construct new json obj with new output weights and store it
 
-	//Calculate hidden layer errors (back prop)
-		//Change hidden layer weights
+
+    
 };
 
-var Learn = function(inputArr, NN){};
+var Learn = function (inputArr, NN) { };
 
-var StopLearning = function(){
+var StopLearning = function () {
     return false;
 };
