@@ -69,6 +69,7 @@ var NeuralMathLib = {
         var layerLen = activatedHiddenArr.length;
         lastLayerInputs = activatedHiddenArr[layerLen-1]; //Last layer of hidden network
 
+        //Calculates the final output weights of the output layer neurons
         var outputs = NeuralMathLib.FinalOutputWeightCalcs(activatedOutputArr, lastLayerInputs, rate, NN);
         
         var outputWBs = outputs.outputWBs;
@@ -79,34 +80,28 @@ var NeuralMathLib = {
 
         ///////// Hidden Layer Calculations
         //
-
         var prevLayerWBs = [];
         var prevLayerHolder = [];
         var last = NN.layers.hiddenLayer.length - 1;
         var lastLayer = NN.layers.hiddenLayer[last];
         for (let i = 0; i < inputs.length; i++) {
-            var wb = lastLayer.neurons[i].wb;
             //var wb = NN.wb["A" + (i + 1)]; //TODO: Update this to take last in hidden layer
-            for (var j = 0; j < wb.w.length; j++) {
-                prevLayerHolder.push(wb.w[j]);
+            for (var j = 0; j < lastLayer.neurons[i].wb.w.length; j++) {
+                prevLayerHolder.push(lastLayer.neurons[i].wb.w[j]);
             }
             prevLayerWBs.push(prevLayerHolder);
             prevLayerHolder = [];
         }
 
-
         //use weights from output layer in first round
         var total = NeuralMathLib.eTotal(prevLayerWBs, finalDeltaArr);
 
-
         var derivative = [];
         var derivatives = [];
-        var derivativeArr = [];
         for (let i = 0; i < prevLayerWBs.length; i++) {
             for (let j = 0; j < prevLayerWBs[i].length; j++) {
-                derivative.push(prevLayerWBs[i][j] * (1 - prevLayerWBs[i][j]));
+                derivative.push(Derivatives.dSig(prevLayerWBs[i][j]));
             }
-            derivativeArr.push(derivative);
             derivatives.push(derivative);
             derivative = [];
         }
@@ -190,7 +185,7 @@ var NeuralMathLib = {
         return num;
     },
     "eTotal": function(prevLayerWBs, finalDeltaArr){
-         var arr = [];
+        var arr = [];
         var arrHolder = [];
         for (let i = 0; i < prevLayerWBs.length; i++) {
             for (let j = 0; j < finalDeltaArr.length; j++) {
