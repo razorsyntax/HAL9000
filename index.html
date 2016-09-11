@@ -8,12 +8,16 @@
 		<script type="text/javascript" src="utilities.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.2.1/math.min.js"></script>
 		
+		<script src="jquery.min.js"></script>
+		
 	</head>
 	<body>
 		<div>
 			<div>
 				<div>Neural Network Object: </div>
 				<div id="NN"></div>
+				<div id="error"></div>
+				<div id="output"></div>
 			</div>
 		</div>
 	</body>
@@ -28,7 +32,7 @@
 			var NN = new NeuralNetwork("Hal9000");
 
 			//create 15 hidden neurons with activation attribute
-			var neuronHidArr = NeuronArray(15, "logsig");
+			var neuronHidArr = NeuronArray(4, "logsig");
 
 			//create hidden layer and give it attributes
 			NN.createLayer({
@@ -38,7 +42,7 @@
 			});
 
 			//create 10 output neurons with activation attribute
-			var neuronOutArr = NeuronArray(10, "logsig");
+			var neuronOutArr = NeuronArray(4, "logsig");
 
 			//create output layer and give it attributes
 			NN.createLayer({
@@ -47,19 +51,38 @@
 				"neurons": neuronOutArr
 			});
 
-			//set targets
-			var targetArr = [0,0,0,1,0,0,0,0,0,0];
+			//set target array
+			var targetArr = [0,0,0,1];
+			//var targetArr = [0,1];
 			NN.setTarget(targetArr);
 			
-			//this creates a JSON obj with all initial weights and biases in NN
-			var inputs = [0,0,0,1,0,0,0,0,0,0];
+			//set input array
+			var inputs = [0,0,0,1];
+			//var inputs = [0,1];
 
-			Train(NN, inputs);
+			//Initialize inputs
+			//this step creates a JSON obj with all initial weights and biases in NN
+    		NN.init(inputs); 
 
-			var NN_string = JSON.stringify(NN);
-			var NNDOM = document.getElementById('NN').innerHTML = NN_string; 
+			//learning rate
+			var rate = 0.5;
 
-			//debugger;
+			//Testing ONLY
+			$("#NN").data("network", NN);
+
+			//Train NN with provided inputs
+			for(let i=0;i<100000;i++){
+				Train(NN, inputs, rate);
+
+				var rate = 0.5;
+				var inputs = [0,0,0,1];
+				//var inputs = [0,1];
+				NN = $("#NN").data("network");
+				var error = $("#error").data("error");
+				var outputArr = $("#output").data("output");
+			}
+			console.log("Error: " + error);
+			console.log("Final Ouput: " + outputArr);
 
 
 			/***********************************/
