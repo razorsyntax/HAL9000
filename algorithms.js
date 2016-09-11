@@ -151,8 +151,7 @@ var NeuralMathLib = {
             var temp = holder.splice(0,inputs.length);
             finalOutputWeight.push(temp);
         }
-
-
+        
         var finalWeight = [];
         var temp;
         holder = finalWeightArr;
