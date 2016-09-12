@@ -4,7 +4,6 @@
 <head>
 	<script type="text/javascript" src="HAL9000.js"></script>
 	<script type="text/javascript" src="algorithms.js"></script>
-	<script type="text/javascript" src="layer.js"></script>
 	<script type="text/javascript" src="neuron.js"></script>
 	<script type="text/javascript" src="utilities.js"></script>
 
@@ -29,6 +28,9 @@
 	</div>
 </body>
 <script>
+		var globalOutputArr;
+		var globalError = [];
+		var globalFinalError = [];
 		var ctx = document.getElementById("myChart");
 		
 
@@ -75,9 +77,9 @@
 			var rate = 0.5;
 
 			//Testing ONLY
-			$("#NN").data("network", NN);
+			//$("#NN").data("network", NN);
 
-			var errorArr = [];
+
 			var count = [];
 			//Train NN with provided inputs
 			for(let i=0;i<1000;i++){
@@ -86,14 +88,11 @@
 				var rate = 0.5;
 				var inputs = [0,0,0,1];
 				//var inputs = [0,1];
-				NN = $("#NN").data("network");
-				error = $("#error").data("error");
-				errorArr.push(error);
-				var outputArr = $("#output").data("output");
+				
 				count.push(i);
 			}
-			console.log("Error: " + error);
-			console.log("Final Ouput: " + outputArr);
+			console.log("Error: " + globalFinalError);
+			console.log("Final Ouput: " + globalOutputArr);
 
 			var chartAttributes = {
 		    	type: 'line',
@@ -119,7 +118,7 @@
             				pointHoverBorderWidth: 2,
             				pointRadius: 1,
             				pointHitRadius: 10,
-            				data: errorArr,
+            				data: globalError,
             				spanGaps: true,
 						}
 					]

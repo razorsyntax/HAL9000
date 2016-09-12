@@ -130,12 +130,12 @@ var Train = function (NN, inputs, rate) {
 
     activatedOutputArr = activatedOutputObj.activated;
     //console.log("Activated Output Layer Array: \n[" + activatedOutputArr + "]\n");
-    $("#output").data("output", activatedOutputArr);
 
     //Total Error Calculation of the Output Layer
     var errDiff = LossFunction(activatedOutputArr, NN.targets);
+    globalError.push(errDiff); //delete when not needed: TESTING ONLY
+    globalFinalError = errDiff; //delete when not needed: TESTING ONLY
     //console.log("Total Error of the Output Layer: \n" + errDiff + "\n");
-    $("#error").data("error", errDiff);
 
     //Backpropogation for Output weights
     NeuralMathLib.backpropagation(inputs, NN, activatedOutputArr, activatedHiddenArr, rate);

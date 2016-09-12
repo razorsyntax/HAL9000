@@ -64,6 +64,8 @@ var NeuralMathLib = {
     },
     "backpropagation": function (inputs, NN, activatedOutputArr, activatedHiddenArr, rate) {
 
+        globalOutputArr = activatedOutputArr;
+
         ///////// Output Layer Calculations
         //
         var layerLen = activatedHiddenArr.length;
@@ -240,11 +242,7 @@ var UpdateWeights = function (finalWeightArr, newOutputWeightArr, NN) {
         NN.layers.outputLayer.neurons[i].wb.w = newOutputWeightArr[i];
         //NN.layers.outputLayer.neurons[i].wb.b = ####;
     }
-    $("#NN").data("network", NN);
 
-    //update weights from hidden layer
-    //var last = NN.layers.hiddenLayer.length;
-    //var lastLayer = last[last-1];
     for (let i = 0; i < finalWeightArr.length; i++) {
         var hLayer = NN.layers.hiddenLayer[i];
         if (typeof hLayer === undefined) {
