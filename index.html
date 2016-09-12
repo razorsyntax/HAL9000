@@ -24,6 +24,7 @@
 			<div id="NN"></div>
 			<div id="error"></div>
 			<div id="output"></div>
+			<div id="Hal"></div>
 		</div>
 	</div>
 </body>
@@ -31,6 +32,7 @@
 		var globalOutputArr;
 		var globalError = [];
 		var globalFinalError = [];
+		var testInputs = [0,0,0,1,0,0,0,0,0];
 		var ctx = document.getElementById("myChart");
 		
 
@@ -47,26 +49,26 @@
 			var layerAttributes = {
 				"name": "HiddenLayer",
 				"type": "hidden",
-				"neurons": NeuronArray(4, "logsig")
+				"neurons": NeuronArray(9, "logsig")
 			};
 			//create n hidden neurons with activation attributes
-			NN.createLayer(2, layerAttributes);
+			NN.createLayer(layerAttributes);
 
 
 			//create output layer and give it attributes
 			NN.createLayer({
 				"name": "MNIST",
 				"type": "output",
-				"neurons": NeuronArray(4, "logsig")
+				"neurons": NeuronArray(9, "logsig")
 			});
 
 			//set target array
-			var targetArr = [0,0,0,1];
+			var targetArr = testInputs;
 			//var targetArr = [0,1];
 			NN.setTarget(targetArr);
 			
 			//set input array
-			var inputs = [0,0,0,1];
+			var inputs = testInputs;
 			//var inputs = [0,1];
 
 			//Initialize inputs
@@ -77,22 +79,25 @@
 			var rate = 0.5;
 
 			//Testing ONLY
-			//$("#NN").data("network", NN);
-
-
 			var count = [];
 			//Train NN with provided inputs
-			for(let i=0;i<1000;i++){
+			for(let i=0;i<500;i++){
 				Train(NN, inputs, rate);
 
 				var rate = 0.5;
-				var inputs = [0,0,0,1];
+				var inputs = testInputs;
 				//var inputs = [0,1];
 				
 				count.push(i);
 			}
-			console.log("Error: " + globalFinalError);
-			console.log("Final Ouput: " + globalOutputArr);
+			console.log("Error: " + globalFinalError + "\n");
+			console.log("Actual output: " + globalOutputArr + "\n");
+			var rounded = [];
+			for(let i=0;i<globalOutputArr.length;i++){
+				rounded.push(Math.round(globalOutputArr[i]));
+			}
+			$("#Hal").text("HAL9000 thinks your input is: [" + rounded + "]");
+			console.log("HAL9000 thinks your input is: [" + rounded + "]\n");
 
 			var chartAttributes = {
 		    	type: 'line',
@@ -126,12 +131,16 @@
  		   		options: {}
 			};
 
-
+			
 			var myChart = new Chart(ctx, chartAttributes);
 
 			/***********************************/
 
 		}).call(this);
+
+		$(".choose").on('click', function(){
+			
+		})
 	</script>
 
 </html>
