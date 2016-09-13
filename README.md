@@ -1,9 +1,12 @@
 # HAL9000
 JavaScript based Neural Network 
 
-This network works but it's shaky at the moment.  Check the Index.html for testing regime.
+####This network works for a single layer with n-neurons at the moment.  Check the Index.html for a testing sample.
+
+####At the moment, the code needs refactoring to simplify tasks, abstract redundant functions, and organization of the back propagation function into discrete reusable chunks.
 
 To start immediate testing, open Index.html and the code runs a simple test.  I've added a line chart to display the training cycle error over time and the predicted result.
+
 
 
 ###### The idea behind this Neural Network is ease of use and customization. The toolset will grow over time.
