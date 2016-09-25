@@ -13,11 +13,11 @@
 
 </head>
 
-<body>
+<body style="background-color:#151515;color:#717171;">
 	<div>
 		<div>
-			<div style="max-width:400px;max-height:400px;">
-				<canvas id="myChart" width="400" height="400"></canvas>
+			<div style="max-width:900px;max-height:600px;">
+				<canvas id="myChart" width="900" height="600"></canvas>
 			</div>
 			<div id="NN"></div>
 			<div id="error"></div>
@@ -98,6 +98,7 @@
 
 			//Testing ONLY
 			var count = [];
+			var includeData = []
 			//Train NN with provided inputs
 			for(let i=0;i<10000;i++){
 				Train(NN, inputs, rate);
@@ -105,8 +106,13 @@
 				var rate = 0.5;
 				var inputs = testInputs;
 				//var inputs = [0,1];
+				if (i%100 === 0){
+					count.push(i);
+					if(globalError[i] < 0.01) {
+						includeData.push(globalError[i]);
+					}
+				}
 				
-				count.push(i);
 			}
 			window.NN = NN;
 			console.log("Error: " + globalFinalError + "\n");
@@ -115,9 +121,8 @@
 			for(let i=0;i<globalOutputArr.length;i++){
 				rounded.push(Math.round(globalOutputArr[i]));
 			}
-			$("#Hal").text("HAL9000 thinks your input is: [" + rounded + "]");
+			$("#Hal").append("<div>Error: " + globalFinalError + "<p>Actual output: " + globalOutputArr + "<p/>HAL9000 thinks your input is: [" + rounded + "]</div>");
 			console.log("HAL9000 thinks your input is: [" + rounded + "]\n");
-
 			var chartAttributes = {
 		    	type: 'line',
 		    	data: {
@@ -142,12 +147,18 @@
             				pointHoverBorderWidth: 2,
             				pointRadius: 1,
             				pointHitRadius: 10,
-            				data: globalError,
+            				data: includeData,
             				spanGaps: true,
 						}
 					]
 				},
- 		   		options: {}
+ 		   		options: {scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:false
+                }
+            }]
+        }}
 			};
 
 			
