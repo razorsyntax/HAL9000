@@ -3,7 +3,7 @@
 
 <head>
 
-	
+
 	<!--<script type="text/javascript" src="src/HAL9000.js"></script>-->
 	<script type="text/javascript" src="src/HAL9000.min.js"></script>
 
@@ -19,60 +19,73 @@
 </head>
 <style>
 	body {
-		background-color:#151515;
-		color:#bfbfbf;
+		background-color: #151515;
+		color: #bfbfbf;
 	}
+	
 	.canvasContainer {
-    	max-width: 750px;
-    	max-height: 450px;
-    	background-color: #f1f1f1;
-    	margin-bottom: 15px;
-    	border-radius: 5px;
-    	margin-left: auto;
-    	margin-right: auto;
-    	border: 2px solid #653838;
+		max-width: 750px;
+		max-height: 450px;
+		background-color: #f1f1f1;
+		margin-bottom: 15px;
+		border-radius: 5px;
+		margin-left: auto;
+		margin-right: auto;
+		border: 2px solid #653838;
 	}
+	
 	.form-control {
 		width: 56px;
-    	height: 29px;
+		height: 29px;
 	}
+	
 	.layerCount {
 		color: #444444;
-    	margin-left: 18px;
-    	border-radius: 3px;
-    	height: 30px;
+		margin-left: 18px;
+		border-radius: 3px;
+		height: 30px;
 		width: 54px;
 	}
-	.optionsBox { 
-		color: #d6d6d6; 
-		margin-bottom: 15px; 
-		padding: 15px; 
+	
+	.optionsBox {
+		color: #d6d6d6;
+		margin-bottom: 15px;
+		padding: 15px;
 		background-color: #653838;
 		border-bottom: 2px solid #1f1414;
 	}
+	
 	.appended {
 		width: 496px;
-    	margin-left: auto;
-    	margin-right: auto;
-    	padding: 15px;
-    	background-color: #bbbbbb;
-    	border-radius: 5px;
-    	color: #4c4c4c;
-    	border: 2px solid #653838;
+		margin-left: auto;
+		margin-right: auto;
+		padding: 15px;
+		background-color: #bbbbbb;
+		border-radius: 5px;
+		color: #4c4c4c;
+		border: 2px solid #653838;
 	}
+	
 	.btn-default {
 		color: #2d2d2d;
-    	background-color: #c19191;
-    	border-color: #3c3c3c;
-    	font-weight: 500;
-	}.btn-default:hover {
-    	background-color: #1dbbb2 !important;
-	}.btn-default:focus {
-    	background-color: #1dbbb2 !important;
-	}.btn-default:active {
-    	background-color: #1dbbb2 !important;
+		background-color: #c19191;
+		border-color: #3c3c3c;
+		font-weight: 500;
+	}
+	
+	.btn-default:hover {
+		background-color: #1dbbb2 !important;
+	}
+	
+	.btn-default:focus {
+		background-color: #1dbbb2 !important;
+	}
+	
+	.btn-default:active {
+		background-color: #1dbbb2 !important;
 	}
 </style>
+
 <body>
 	<div class="container">
 		<div class="row" style="background-color: #383838;border-bottom: 2px solid #af8888;">
@@ -85,9 +98,9 @@
 					<div style="margin-left: 60px;">
 						<div style="display:flex;">
 							<h4 style="margin-top: 6px;">Intial Inputs:&nbsp;</h4>
-							<input class="form-control inputOne" value="0"/>
-							<input class="form-control inputTwo" value="0"/>
-							<input class="form-control inputThree" value="1"/>
+							<input class="form-control inputOne" value="0" />
+							<input class="form-control inputTwo" value="0" />
+							<input class="form-control inputThree" value="1" />
 						</div>
 						<div style="display:flex;">
 							<h4 style="margin-top: 6px;">Select Number of Layers</h4>
@@ -100,7 +113,7 @@
 						<button class="btn btn-default train" value="Train">TRAIN NETWORK</button>
 					</div>
 				</div>
-				
+
 			</div>
 			<div class="canvasContainer" style="">
 				<canvas id="myChart" width="750" height="450"></canvas>
@@ -117,7 +130,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 	</div>
 </body>
 <script>
@@ -130,7 +143,7 @@
 		var scrapeInput = function(){
 			var inputs = [$(".inputOne").val(), $(".inputTwo").val(), $(".inputThree").val()]
 			return inputs;
-		}
+		};
 		var renderChart = function(count, includeData){
 			var ctx = document.getElementById("myChart");
 			var chartAttributes = {
@@ -162,17 +175,22 @@
 						}
 					]
 				},
- 		   		options: {scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:false
-                }
-            }]
-        }}
+ 		   		options: {
+						scales: {
+            				yAxes: [{
+                				ticks: {
+                    				beginAtZero:false
+                				}
+            				}]
+        				}
+				}
 			};
 			var myChart = new Chart(ctx, chartAttributes);
-		}
+		};
 
+		/**
+		 * STARTS NETWORK
+		 */
 		var startNetwork = function(inputs,layerCount) {
 			var NN = new NeuralNetwork("Hal9000");
 
@@ -201,7 +219,6 @@
 
 			for(let i=0;i<10000;i++){
 				Train(NN, inputs, rate);
-
 				var rate = 0.5;
 				var inputs = testInputs;
 				if (i%100 === 0){
@@ -231,7 +248,8 @@
 			var layerCount = parseInt($(".layerCount").val());
 
 			startNetwork(inputs,layerCount);
-		}
+		};
+
 		$(".train").on('click', train);
 
 		/**
