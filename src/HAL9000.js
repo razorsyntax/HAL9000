@@ -179,7 +179,6 @@ var Train = function (NN, inputs, rate) {
 
     ///////// Hidden Layer Calculations
     //
-    NN.layers.outputLayer
     var layers = utilities.returnArray(NN.layers.hiddenLayer);
     var reversedLayers = layers.reverse();
     
