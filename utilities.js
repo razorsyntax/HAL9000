@@ -39,19 +39,11 @@ var utilities = {
             //if it has "Output"
             //grab 
         },
-        "doubleLoop": function(first, second, expression){
-
-            //construct a custom double loop with expression
-
-            var arr1 = [];
-            var arr2 = [];
-            for(let i=0;i<first.length;i++){
-                for(let j=0;j<second.length;i++){
-                    //expression
-                }
-                arr2.push(arr1);
+        "returnArray": function(quantity){
+            var arr = [];
+            for(let i=0;i<quantity.length;i++){
+                arr.push(quantity[i]);
             }
-            
-            return arr2;
+            return arr;
         }
 };
