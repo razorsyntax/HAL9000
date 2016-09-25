@@ -1,67 +1,196 @@
 /**
-* This is a sample Neural Network obj. This will be updated to reflect a NN that's ready to be trained
+* This is a trained Neural Network object of three hidden layers three neurons each. Each neuron has its own randomly generated bias.
+*   The structure of the network looks like this:
+*
+*             i -- h -- h -- h -- o
+*               \/   \/   \/   \/
+*               /\   /\   /\   /\
+*             i -- h -- h -- h -- o
+*               \/   \/   \/   \/
+*               /\   /\   /\   /\
+*             i -- h -- h -- h -- o
+*
+*   Note: The layerID property is generated automatically.  No need to set it.
+*
 */
 {
-        "name": "HAL9000",
-        "layers": [
+    "name": "Hal9000",
+    "layers": {
+        "inputLayer": {
+            "inputs": [0,0,1]
+        },
+        "hiddenLayer": [
             {
-                "inputLayer": {
-                        "type": "input",
-                        "inputs": [1,0,0]
-                    },
-                "hiddenLayer": [
+                "name": "HiddenLayerA",
+                "layerID": "A",
+                "type": "hidden",
+                "neurons": [
                     {
-                        "name": "Edge_Detection",
-                        "layerID": "A",
-                        "type": "hidden",
-                        "neurons": [
-                            {
-                                "id": "A1",
-                                "activation": "logsig",
-                                "wb": {"w":[0.7,0.8,0.3],"b":1}
-                            },
-                            {
-                                "id": "A2",
-                                "activation": "logsig",
-                                "wb": {"w":[0.6,0.2,0.5],"b":0.2}
-                            }
-                        ]
-                    },
-                    {
-                        "name": "Obj_Detection",
-                        "layerID": "B",
-                        "type": "hidden",
-                        "neurons": [
-                            {
-                                "id": "B1",
-                                "activation": "logsig",
-                                "wb": {"w":[0.3,0.7,0.4],"b":0.1}
-                            },
-                            {
-                                "id": "B2",
-                                "activation": "logsig",
-                                "wb": {"w":[0.8,0.5,0.1],"b":0.5}
-                            }
-                        ]
-                    }
-                ],
-                "outputLayer": {
-                    "layerID": "output",
-                    "type":"output",
-                    "neurons": [
-                        {
-                            "id": "Output_1",
-                            "activation": "logsig",
-                            "wb": {"w":[0.7,0.8,0.3],"b":1}
-                        },
-                        {
-                            "id": "Output_2",
-                            "activation": "logsig",
-                            "wb": {"w":[0.6,0.2,0.5],"b":0.2}
+                        "activation": "logsig",
+                        "id": "A1",
+                        "wb": {
+                            "w": [
+                                0.7530108793268123,
+                                1.1384870040405148,
+                                0.1620412373081546
+                            ],
+                            "b": 0.07669024565249674
                         }
-                    ]
+                    },
+                    {
+                        "activation": "logsig",
+                        "id": "A2",
+                        "wb": {
+                            "w": [
+                                0.9154745129508186,
+                                0.8868380561467077,
+                                1.0074094219924625
+                            ],
+                            "b": 0.20454087091961695
+                        }
+                    },
+                    {
+                        "activation": "logsig",
+                        "id": "A3",
+                        "wb": {
+                            "w": [
+                                1.0697967634111765,
+                                1.6236332143185497,
+                                1.5387034477512869
+                            ],
+                            "b": 0.9995555022133373
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "HiddenLayerB",
+                "layerID": "B",
+                "type": "hidden",
+                "neurons": [
+                    {
+                        "activation": "logsig",
+                        "id": "B1",
+                        "wb": {
+                            "w": [
+                                1.3448442440340425,
+                                1.7240538713453786,
+                                1.035785250452475
+                            ],
+                            "b": 0.8789268362977714
+                        }
+                    },
+                    {
+                        "activation": "logsig",
+                        "id": "B2",
+                        "wb": {
+                            "w": [
+                                2.0188198414575766,
+                                1.636895551950741,
+                                1.9069454405821662
+                            ],
+                            "b": 0.035753210648443695
+                        }
+                    },
+                    {
+                        "activation": "logsig",
+                        "id": "B3",
+                        "wb": {
+                            "w": [
+                                1.4398979698537482,
+                                1.45616585448804,
+                                1.2463805805993247
+                            ],
+                            "b": 0.8321902239126059
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "HiddenLayerC",
+                "layerID": "C",
+                "type": "hidden",
+                "neurons": [
+                    {
+                        "activation": "logsig",
+                        "id": "C1",
+                        "wb": {
+                            "w": [
+                                1.5944933470017066,
+                                0.8329708587887394,
+                                1.758446182565391
+                            ],
+                            "b": 0.7830763830728763
+                        }
+                    },
+                    {
+                        "activation": "logsig",
+                        "id": "C2",
+                        "wb": {
+                            "w": [
+                                1.677516207124316,
+                                1.7145979696403553,
+                                1.8066107174353319
+                            ],
+                            "b": 0.6245649504770463
+                        }
+                    },
+                    {
+                        "activation": "logsig",
+                        "id": "C3",
+                        "wb": {
+                            "w": [
+                                1.235260889412544,
+                                0.883934651941076,
+                                1.308835056501054
+                            ],
+                            "b": 0.8969101796320934
+                        }
+                    }
+                ]
+            }
+        ],
+        "outputLayer": {
+            "type": "output",
+            "neurons": [
+                {
+                    "activation": "logsig",
+                    "id": "Output_1",
+                    "wb": {
+                        "w": [
+                            -2.144772116272122,
+                            -1.919117662416694,
+                            -2.0727832016428085
+                        ],
+                        "b": 0.10101468435813764
+                    }
+                },
+                {
+                    "activation": "logsig",
+                    "id": "Output_2",
+                    "wb": {
+                        "w": [
+                            -2.0148488083925,
+                            -2.66289484600763,
+                            -2.122350202473246
+                        ],
+                        "b": 0.5227932076149175
+                    }
+                },
+                {
+                    "activation": "logsig",
+                    "id": "Output_3",
+                    "wb": {
+                        "w": [
+                            1.8810420746436693,
+                            1.6105110076130336,
+                            2.3146632587665548
+                        ],
+                        "b": 0.29361275406424353
+                    }
                 }
+            ]
         }
-    ],
-    "targets": [0,1,0]
+    },
+    "targets": [0,0,1]
 }
