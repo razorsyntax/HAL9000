@@ -1,7 +1,9 @@
 # HAL9000
-JavaScript based Neural Network 
+A JavaScript-based Neural Network
 
-Demo Here: http://nodepirate-razorium.rhcloud.com
+####Wiki: https://github.com/razorsyntax/HAL9000/wiki
+
+####Training Demo Here: http://nodepirate-razorium.rhcloud.com
 
 ####This network works for a multple layers with of identical size.  Check the Index.html for a testing sample.
 
