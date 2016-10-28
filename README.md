@@ -1,4 +1,4 @@
-# HAL9000
+# HAL9000.js
 A JavaScript-based Neural Network
 
 ####Wiki: https://github.com/razorsyntax/HAL9000/wiki
