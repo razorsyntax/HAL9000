@@ -1,4 +1,5 @@
-# HAL9000.js
+[![solarized dualmode](https://nodepirate-razorium.rhcloud.com/images/halpng.png)](#features)
+
 A JavaScript-based Neural Network
 
 ####Wiki: https://github.com/razorsyntax/HAL9000/wiki
