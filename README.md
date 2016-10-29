@@ -1,4 +1,4 @@
-[![solarized dualmode](https://nodepirate-razorium.rhcloud.com/images/halpng.png)](#features)
+[![solarized dualmode](https://nodepirate-razorium.rhcloud.com/images/halpng.png)]
 
 A JavaScript-based Neural Network
 
