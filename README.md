@@ -6,7 +6,7 @@ A JavaScript-based Neural Network
 
 ####Training Demo Here: http://nodepirate-razorium.rhcloud.com
 
-####This network works for a multple layers with of identical size.  Check the Index.html for a testing sample.
+####This network works for multiple layers of identical size.  Check the Index.html for a testing sample.
 
 ####At the moment, the code needs refactoring to simplify tasks, abstract redundant functions, and organization of the back propagation function into discrete reusable chunks.
 
