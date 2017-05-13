@@ -157,7 +157,7 @@ var Train = function(NN, inputs, rate, iter, error) {
         }
 
         //Calculate Activated Output Layers
-        lastLayerInputs = activatedHiddenArr[activatedHiddenArr.length - 1]; //Last layer of hidden network
+        var lastLayerInputs = activatedHiddenArr[activatedHiddenArr.length - 1]; //Last layer of hidden network
         var neuronOutArr = NN.layers.outputLayer.neurons;
         var activatedOutputObj = NeuralMathLib.activatedLayer(neuronOutArr, lastLayerInputs, "output");
 
