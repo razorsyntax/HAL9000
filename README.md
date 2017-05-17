@@ -2,9 +2,16 @@
 
 A JavaScript-based Neural Network 
 
-
 ### Getting started is really easy...
 
+1) Create your network
+2) Add your neurons and layers
+3) Initialize the network
+4) Train!
+
+Check out the steps below
+
+## 1) Create your network
 ```javascript
 var inputs = [0,0,1];
 var learningRate = .05;
@@ -13,7 +20,10 @@ var enableErrors = true; // Enables and appends training errors to the Neural Ne
 
 // Create the network and give it name
 var NN = new NeuralNetwork("HAL9000");
-  
+```
+
+## 2) Add your neurons and layers
+```javascript
 // Create a hidden layer with three neurons
 var hiddenLayerNeurons = NeuronArray(3, "logsig");
 
@@ -34,8 +44,11 @@ NN.createLayer({
     "type": "output",
     "neurons": outputLayerNeurons
 });
+```
 
-// Set the target you want your Network to learn (in this case, it's the same as the inputs)
+## 3) Initialization
+```javascript
+// Set the training targets you want your Network to learn (in this case, it's the same as the inputs)
 NN.setTarget(inputs);
 
 /* Initialize your Neural Network
@@ -43,7 +56,10 @@ NN.setTarget(inputs);
  *      setting up the initial conditions for training
  */
 NN.init(inputs);
+```
 
+## 4) Train your network
+```javascript
 // Returns a JSON object representation of your Neural Network
 var trainedResult = Train(NN, inputs, learningRate, trainingCycles, enableErrors);
 ```
@@ -53,13 +69,7 @@ var trainedResult = Train(NN, inputs, learningRate, trainingCycles, enableErrors
 
 #### Training Demo Here: http://nodepirate-razorium.rhcloud.com
 
-#### This network works for multiple layers of identical size.  Check the Index.html for a testing sample.
-
-#### At the moment, the code needs refactoring to simplify tasks, abstract redundant functions, and organization of the back propagation function into discrete reusable chunks.
-
-
-
-###### The Network is represented by a dynamically updating JSON obj.
+#### Check the Index.html for a testing sample.
 
 Notes: 
 * This library depends on math.js to for its matrix math.
