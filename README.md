@@ -1,16 +1,15 @@
 [![solarized dualmode](https://nodepirate-razorium.rhcloud.com/images/halpng.png)](#)
 
-A JavaScript-based Neural Network
+A JavaScript-based Neural Network 
 
 
 ### Getting started is really easy...
 
 ```javascript
-// Set your Input Array
 var inputs = [0,0,1];
 var learningRate = .05;
 var trainingCycles = 10000;
-var enableErrors = true; // Retains the errors of each training cycle and appends them to the NN json.
+var enableErrors = true; // Enables and appends training errors to the Neural Network json.
 
 // Create the network and give it name
 var NN = new NeuralNetwork("HAL9000");
@@ -50,7 +49,6 @@ var trainedResult = Train(NN, inputs, learningRate, trainingCycles, enableErrors
 ```
 
 
-
 #### Wiki: https://github.com/razorsyntax/HAL9000/wiki
 
 #### Training Demo Here: http://nodepirate-razorium.rhcloud.com
@@ -59,11 +57,7 @@ var trainedResult = Train(NN, inputs, learningRate, trainingCycles, enableErrors
 
 #### At the moment, the code needs refactoring to simplify tasks, abstract redundant functions, and organization of the back propagation function into discrete reusable chunks.
 
-To start immediate testing, open Index.html and the code runs a simple test.  I've added a line chart to display the training cycle error over time and the predicted result.
 
-
-
-###### The idea behind this Neural Network is ease of use and customization. The toolset will grow over time.
 
 ###### The Network is represented by a dynamically updating JSON obj.
 
