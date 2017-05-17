@@ -2,6 +2,55 @@
 
 A JavaScript-based Neural Network
 
+
+### Getting started is really easy...
+
+```javascript
+// Set your Input Array
+var inputs = [0,0,1];
+var learningRate = .05;
+var trainingCycles = 10000;
+var enableErrors = true; // Retains the errors of each training cycle and appends them to the NN json.
+
+// Create the network and give it name
+var NN = new NeuralNetwork("HAL9000");
+  
+// Create a hidden layer with three neurons
+var hiddenLayerNeurons = NeuronArray(3, "logsig");
+
+// Create a hidden layer with your hidden layer neurons
+NN.createLayer({
+    "name": "HiddenLayer",
+    "type": "hidden",
+    "neurons": hiddenLayerNeurons
+}); 
+
+// Create a output layer with three neurons
+var outputLayerNeurons = NeuronArray(3, "logsig");
+
+
+// Create a output layer with your hidden layer neurons
+NN.createLayer({
+    "name": "MNIST",
+    "type": "output",
+    "neurons": outputLayerNeurons
+});
+
+// Set the target you want your Network to learn (in this case, it's the same as the inputs)
+NN.setTarget(inputs);
+
+/* Initialize your Neural Network
+ *      This step creates pseudo-random inital weights and biases for your neural network
+ *      setting up the initial conditions for training
+ */
+NN.init(inputs);
+
+// Returns a JSON object representation of your Neural Network
+var trainedResult = Train(NN, inputs, learningRate, trainingCycles, enableErrors);
+```
+
+
+
 #### Wiki: https://github.com/razorsyntax/HAL9000/wiki
 
 #### Training Demo Here: http://nodepirate-razorium.rhcloud.com
