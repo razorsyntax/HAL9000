@@ -34,9 +34,8 @@ NN.createLayer({
     "neurons": hiddenLayerNeurons
 }); 
 
-// Create a output layer with three neurons
+// Create an output layer with three neurons
 var outputLayerNeurons = NeuronArray(3, "logsig");
-
 
 // Create a output layer with your hidden layer neurons
 NN.createLayer({
