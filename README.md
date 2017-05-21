@@ -5,8 +5,12 @@
 You can train your network and then transfer the learned results!
 
 ### tl;dr
-* npm install hal9000js
-
+```bash
+$ npm install hal9000js
+```
+```javascript
+var hal9000 = require('hal9000js');
+```
 ### Getting started is really easy...
 
 1) Create your network
