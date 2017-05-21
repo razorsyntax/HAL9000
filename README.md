@@ -4,6 +4,8 @@
 
 You can train your network and then transfer the learned results!
 
+### tl;dr
+* npm install hal9000js
 
 ### Getting started is really easy...
 
