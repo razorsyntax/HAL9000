@@ -73,12 +73,10 @@ var trainedResult = Train(NN, inputs, learningRate, trainingCycles, enableErrors
 ```
 
 
-
 ## Use Case
 
 ```javascript
 // This is where the magic starts
-var trainedNetwork = NN; // NN is your trained Neural Network
 
 var input = [1,0,1]; // <-- This input can represent anything you need classified
 /**
@@ -89,7 +87,7 @@ var input = [1,0,1]; // <-- This input can represent anything you need classifie
  */
 
 //Prediction returns a classified array.
-Prediction(trainedNetwork, input);
+Prediction(trainedResult, input); // trainedResult from step 4)
 
 // If you give [1,0,0] to Prediction, you should have values close to [1,0,0] returned!
 //   This means your network is trained!
