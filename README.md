@@ -73,6 +73,32 @@ var trainedResult = Train(NN, inputs, learningRate, trainingCycles, enableErrors
 ```
 
 
+
+## Use Case
+
+```javascript
+// This is where the magic starts
+var trainedNetwork = NN; // NN is your trained Neural Network
+
+var input = [1,0,1]; // <-- This input can represent anything you need classified
+/**
+ * Note:
+ *    Let's say you want to classify apples and oranges.
+ *    Apples would be represented by [0,1,0] and oranges would be represented by [1,0,0].
+ *    When you give your represented inputs to Prediction(...) it should output the respective classsified output
+ */
+
+//Prediction returns a classified array.
+Prediction(trainedNetwork, input);
+
+// If you give [1,0,0] to Prediction, you should have values close to [1,0,0] returned!
+//   This means your network is trained!
+
+// I'll have a sample demo of a trained network up shortly
+
+```
+
+
 #### Wiki: https://github.com/razorsyntax/HAL9000/wiki
 
 #### Training Demo Here: http://nodepirate-razorium.rhcloud.com
