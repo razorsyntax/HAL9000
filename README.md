@@ -83,11 +83,10 @@ var input = [1,0,1]; // <-- This input can represent anything you need classifie
  * Note:
  *    Let's say you want to classify apples and oranges.
  *    Apples would be represented by [0,1,0] and oranges would be represented by [1,0,0].
- *    When you give your represented inputs to Prediction(...) it should output the respective classsified output
+ *    When you give the inputs to Prediction(...), it'll output a classified result
  */
 
-//Prediction returns a classified array.
-Prediction(trainedResult, input); // trainedResult from step 4)
+var classified = Prediction(trainedResult, input); // "trainedResult" from step 4)
 
 // If you give [1,0,0] to Prediction, you should have values close to [1,0,0] returned!
 //   This means your network is trained!
