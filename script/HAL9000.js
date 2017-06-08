@@ -1,4 +1,3 @@
-
 /**
  * HAL 9000 Neural Network Beta v.01
  * Written By: David R. Schwartz
@@ -251,6 +250,28 @@ var Train = function(NN, inputs, rate, iter, error) {
         }
     }
 };
+
+var Prediction = function(NN,inputs){
+	var newInputs = [];
+        var activatedOutputArr = [];
+        var activatedHiddenArr = [];
+        var sumsOFAllLayers = [];
+
+        /////// FEED FORWARD
+        //
+        for (let i = 0; i < NN.layers.hiddenLayer.length; i++) { //Calculate Activated Hidden Layer Outputs
+            var neuronHidArr = NN.layers.hiddenLayer[i].neurons;
+            var activatedHiddenObj = NeuralMathLib.activatedLayer(neuronHidArr, inputs, "hidden");
+            activatedHiddenArr.push(activatedHiddenObj.activated); //inputs for next layer
+            sumsOFAllLayers.push(activatedHiddenObj); //storing activated inputs & sums from layers for later
+        }
+
+        //Calculate Activated Output Layers
+        var lastLayerInputs = activatedHiddenArr[activatedHiddenArr.length - 1]; //Last layer of hidden network
+        var neuronOutArr = NN.layers.outputLayer.neurons;
+        var activatedOutputObj = NeuralMathLib.activatedLayer(neuronOutArr, lastLayerInputs, "output");
+        return activatedOutputObj.activated._data;
+}
 
 var StopLearning = function() {
     return false;
