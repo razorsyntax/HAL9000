@@ -1,6 +1,6 @@
 [![solarized dualmode](https://nodepirate-razorium.rhcloud.com/images/halpng.png)](#)
 
-### An easy to use JavaScript-based Neural Network for simple classification.
+### An easy to use JavaScript-based Recurrent Neural Network for simple classification.
 
 You can train your network and then transfer the learned results!
 
