@@ -1,5 +1,3 @@
-[![solarized dualmode](https://nodepirate-razorium.rhcloud.com/images/halpng.png)](#)
-
 ### An easy to use JavaScript-based Recurrent Neural Network for simple classification.
 
 You can train your network and then transfer the learned results!
@@ -98,7 +96,7 @@ var classified = Prediction(trainedResult, input); // "trainedResult" from step 
 
 #### Wiki: https://github.com/razorsyntax/HAL9000/wiki
 
-#### Training Demo Here: http://nodepirate-razorium.rhcloud.com
+#### Training Demo Here: https://razorsyntax.github.io/HAL9000/
 
 #### Check the Index.html for a testing sample.
 
