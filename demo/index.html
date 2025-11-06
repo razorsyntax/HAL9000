@@ -16,18 +16,146 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <link href="examplestyle.css" rel="stylesheet">
+    <link href="assets/css/examplestyle.css" rel="stylesheet">
 
-    <script type="text/javascript" src="angular.min.js"></script>
-    <script type="text/javascript" src="nnApp.js"></script>
+    <script type="text/javascript" src="./lib/angular.min.js"></script>
+    <script type="text/javascript" src="./lib/nnApp.js"></script>
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.6.0/math.min.js"></script>
+    <!-- GPU.js for hardware acceleration (optional) -->
+    <script src="https://unpkg.com/gpu.js@latest/dist/gpu-browser.min.js"></script>
 
-    <script type="text/javascript" src="script/HAL9000.js"></script>
-    <script type="text/javascript" src="script/HAL9000.min.js"></script>
-
-
-
+    <!-- HAL9000 Library - Using UMD build -->
+    <script type="text/javascript" src="../dist/hal9000.umd.js"></script>
+    <script type="text/javascript">
+        // Extract HAL9000 functions to global scope for backward compatibility
+        var NeuralNetwork = hal9000.NeuralNetwork;
+        var Train = hal9000.Train;
+        var Prediction = hal9000.Prediction;
+        var NeuronArray = hal9000.NeuronArray;
+        
+        // Extract backend management functions
+        var loadGPUBackend = hal9000.loadGPUBackend;
+        var getBackend = hal9000.getBackend;
+        var setBackend = hal9000.setBackend;
+        var listBackends = hal9000.listBackends;
+        var detectBackend = hal9000.detectBackend;
+        
+        // Check hardware acceleration status
+        (async function() {
+            console.log('%cHAL9000 Hardware Acceleration Status', 'font-size: 16px; font-weight: bold; color: #ac0000;');
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            
+            // Check WebGL support directly
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            const webglAvailable = !!gl;
+            
+            console.log('WebGL Support:', webglAvailable ? '✅ Available' : '❌ Not Available');
+            if (gl) {
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                if (debugInfo) {
+                    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                    console.log('GPU Renderer:', renderer);
+                }
+            }
+            
+            // Check if GPU.js is loaded
+            if (typeof GPU !== 'undefined') {
+                console.log('✅ GPU.js library detected');
+                console.log('   GPU type:', typeof GPU);
+                console.log('   GPU object:', GPU);
+                
+                // Check different ways GPU.js might be exported
+                let GPUCtor = GPU;
+                if (GPU.GPU && typeof GPU.GPU === 'function') {
+                    GPUCtor = GPU.GPU;
+                    console.log('   Found GPU.GPU constructor');
+                } else if (GPU.default && typeof GPU.default === 'function') {
+                    GPUCtor = GPU.default;
+                    console.log('   Found GPU.default constructor');
+                } else if (typeof GPU === 'function') {
+                    console.log('   GPU is directly a constructor');
+                } else {
+                    console.log('   ⚠️ GPU is not a constructor, checking structure...');
+                    console.log('   GPU keys:', Object.keys(GPU));
+                }
+                
+                // Try to create a GPU instance and check WebGL
+                try {
+                    if (typeof GPUCtor === 'function') {
+                        // Try with explicit GPU mode first
+                        let testGPU = null;
+                        try {
+                            testGPU = new GPUCtor({ mode: 'gpu' });
+                            console.log('   Created GPU instance with mode: gpu');
+                        } catch (e) {
+                            console.log('   Failed to create with mode: gpu, trying default...');
+                            testGPU = new GPUCtor();
+                            console.log('   Created GPU instance with default mode');
+                        }
+                        
+                        if (testGPU) {
+                            const mode = testGPU.mode || (testGPU.getMode ? testGPU.getMode() : 'unknown');
+                            console.log('   GPU.js mode:', mode);
+                            
+                            const webglContext = testGPU.getWebGLContext ? testGPU.getWebGLContext() : null;
+                            console.log('GPU.js WebGL Context:', webglContext ? '✅ Available' : '❌ Not Available');
+                            
+                            if (!webglContext && mode !== 'gpu') {
+                                console.log('   GPU.js is running in CPU mode (WebGL not accessible)');
+                                console.log('   This may be due to browser restrictions or WebGL being blocked');
+                            } else if (!webglContext) {
+                                console.log('   GPU.js reports GPU mode but cannot access WebGL context');
+                            }
+                        }
+                    } else {
+                        console.log('   ❌ Cannot create GPU instance - constructor not found');
+                    }
+                } catch (e) {
+                    console.log('❌ Error creating GPU instance:', e.message);
+                    console.log('   Error details:', e);
+                }
+            } else {
+                console.log('⚠️ GPU.js library not found - GPU acceleration unavailable');
+            }
+            
+            // Try to load GPU backend
+            const gpuBackend = await loadGPUBackend();
+            
+            if (gpuBackend) {
+                console.log('✅ GPU backend loaded successfully');
+                console.log('   GPU backend isAvailable:', gpuBackend.isAvailable);
+                setBackend('gpu');
+            } else {
+                console.log('⚠️ GPU backend not available');
+                if (typeof GPU === 'undefined') {
+                    console.log('   Reason: GPU.js library not loaded');
+                } else if (!webglAvailable) {
+                    console.log('   Reason: WebGL not supported in this browser');
+                } else {
+                    console.log('   Reason: GPU.js cannot access WebGL (may be blocked by browser)');
+                }
+            }
+            
+            // Check current backend
+            const backend = getBackend();
+            const backendName = backend.name;
+            const isGPU = backendName === 'gpu';
+            
+            console.log('Current backend:', backendName);
+            console.log('Available backends:', listBackends());
+            console.log('Best detected backend:', detectBackend());
+            
+            if (isGPU) {
+                console.log('%c🚀 GPU ACCELERATION IS ACTIVE', 'font-size: 14px; font-weight: bold; color: #00ff00; background: #000; padding: 4px;');
+            } else {
+                console.log('%c💻 Using CPU (no GPU acceleration)', 'font-size: 14px; font-weight: bold; color: #ffaa00; background: #000; padding: 4px;');
+            }
+            
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('Tip: Use hal9000.getBackend() to check backend status anytime');
+        })();
+    </script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.bundle.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js"></script>
@@ -51,7 +179,7 @@
         <div class="row">
             <div style="display: flex;">
                 <div class="halSVG">
-                    <img src="images/HAL9000_Case.svg" height="658px;" style="height: 100%;">
+                    <img src="assets/images/HAL9000_Case.svg" height="658px;" style="height: 100%;">
                 </div>
                 <div class="optionsBox">
                     <div class="optionsBorder" style="background-color: #000000;padding: 5px 5px 15px 5px;">
@@ -254,6 +382,9 @@
         };
 
         function trainNetwork(data) {
+            // Log backend status before training
+            const backend = getBackend();
+            console.log('%cTraining started with backend: ' + backend.name, 'font-weight: bold; color: #009bdc;');
 
             var NN = new NeuralNetwork(data.name);
 
@@ -337,6 +468,10 @@
         };
 
         function finish(NN, inputs, loopCount) {
+            // Log backend status after training
+            const backend = getBackend();
+            console.log('%cTraining completed using backend: ' + backend.name, 'font-weight: bold; color: #00ff00;');
+            
             var predictionArray = NN.predictionArray;
             var globalFinalError = NN.globalFinal;
             var globalError = NN.globalError;

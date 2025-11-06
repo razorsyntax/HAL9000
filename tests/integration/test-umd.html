@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HAL9000 UMD Build Test</title>
+</head>
+<body>
+	<h1>Testing UMD Build</h1>
+	<div id="output"></div>
+
+	<script src="../../dist/hal9000.umd.js"></script>
+	<script>
+		console.log('Testing UMD build...\n');
+
+		// Use hal9000 global variable
+		const { NeuralNetwork, Train, Prediction, NeuronArray } = hal9000;
+
+		// Create network
+		const NN = new NeuralNetwork('TestNetwork');
+		NN.createLayer({
+			type: 'hidden',
+			neurons: NeuronArray(3, 'logsig')
+		});
+		NN.createLayer({
+			type: 'output',
+			neurons: NeuronArray(1, 'logsig')
+		});
+
+		NN.setTarget([0.8]);
+		NN.init(2);
+
+		// Train
+		const inputs = [0.5, 0.5];
+		const trainedNN = Train(NN, inputs, 0.5, 10, true);
+
+		console.log('✓ UMD build works!');
+		console.log('  Final error:', trainedNN.globalFinal);
+		console.log('  Prediction:', Prediction(trainedNN, inputs));
+
+		document.getElementById('output').innerHTML = 
+			'<p>✓ UMD build works!</p>' +
+			'<p>Final error: ' + trainedNN.globalFinal + '</p>' +
+			'<p>Prediction: ' + Prediction(trainedNN, inputs) + '</p>';
+	</script>
+</body>
+</html>
+

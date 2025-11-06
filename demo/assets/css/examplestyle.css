@@ -1,6 +1,6 @@
 @font-face {
 	font-family: serifFont;
-	src: url(fonts/aHAL.woff);
+	src: url(../fonts/aHAL.woff);
 }
 
 @media (min-width: 1200px) {

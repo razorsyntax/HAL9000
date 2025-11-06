@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HAL9000 Vanilla JS Example</title>
+</head>
+<body>
+	<h1>HAL9000 Neural Network</h1>
+	<button id="trainBtn">Train Network</button>
+	<div id="results"></div>
+
+	<!-- Option 1: Use CDN -->
+	<script src="https://unpkg.com/hal9000js@latest/dist/hal9000.umd.min.js"></script>
+
+	<!-- Option 2: Use local file -->
+	<!-- <script src="./dist/hal9000.umd.js"></script> -->
+
+	<script>
+		const { NeuralNetwork, Train, Prediction, NeuronArray } = hal9000;
+
+		document.getElementById('trainBtn').addEventListener('click', function() {
+			// Create network
+			const NN = new NeuralNetwork('MyNetwork');
+			NN.createLayer({
+				type: 'hidden',
+				neurons: NeuronArray(5, 'logsig')
+			});
+			NN.createLayer({
+				type: 'output',
+				neurons: NeuronArray(3, 'logsig')
+			});
+
+			// Set targets and initialize
+			NN.setTarget([0.1, 0.9, 0.2]);
+			NN.init(3);
+
+			// Train
+			const inputs = [0.5, 0.3, 0.8];
+			const trainedNN = Train(NN, inputs, 0.5, 1000, true);
+
+			// Predict
+			const result = Prediction(trainedNN, inputs);
+
+			// Display results
+			document.getElementById('results').innerHTML = 
+				'<h2>Results</h2>' +
+				'<p>Final Error: ' + trainedNN.globalFinal + '</p>' +
+				'<p>Prediction: [' + result.join(', ') + ']</p>';
+		});
+	</script>
+</body>
+</html>
+
