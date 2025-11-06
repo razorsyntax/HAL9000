@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en-us" ng-app="nnApp">
+
+<head>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <title>HAL9000.js Neural Network</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link href="assets/css/examplestyle.css" rel="stylesheet">
+
+    <script type="text/javascript" src="./lib/angular.min.js"></script>
+    <script type="text/javascript" src="./lib/nnApp.js"></script>
+
+    <!-- GPU.js for hardware acceleration (optional) -->
+    <script src="https://unpkg.com/gpu.js@latest/dist/gpu-browser.min.js"></script>
+
+    <!-- HAL9000 Library - Using CDN for GitHub Pages compatibility -->
+    <script src="https://unpkg.com/hal9000js@latest/dist/hal9000.umd.min.js"></script>
+    <script type="text/javascript">
+        // Extract HAL9000 functions to global scope for backward compatibility
+        var NeuralNetwork = hal9000.NeuralNetwork;
+        var Train = hal9000.Train;
+        var Prediction = hal9000.Prediction;
+        var NeuronArray = hal9000.NeuronArray;
+        
+        // Extract backend management functions
+        var loadGPUBackend = hal9000.loadGPUBackend;
+        var getBackend = hal9000.getBackend;
+        var setBackend = hal9000.setBackend;
+        var listBackends = hal9000.listBackends;
+        var detectBackend = hal9000.detectBackend;
+        
+        // Check hardware acceleration status
+        (async function() {
+            console.log('%cHAL9000 Hardware Acceleration Status', 'font-size: 16px; font-weight: bold; color: #ac0000;');
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            
+            // Check WebGL support directly
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            const webglAvailable = !!gl;
+            
+            console.log('WebGL Support:', webglAvailable ? '✅ Available' : '❌ Not Available');
+            if (gl) {
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                if (debugInfo) {
+                    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                    console.log('GPU Renderer:', renderer);
+                }
+            }
+            
+            // Check if GPU.js is loaded
+            if (typeof GPU !== 'undefined') {
+                console.log('✅ GPU.js library detected');
+                console.log('   GPU type:', typeof GPU);
+                console.log('   GPU object:', GPU);
+                
+                // Check different ways GPU.js might be exported
+                let GPUCtor = GPU;
+                if (GPU.GPU && typeof GPU.GPU === 'function') {
+                    GPUCtor = GPU.GPU;
+                    console.log('   Found GPU.GPU constructor');
+                } else if (GPU.default && typeof GPU.default === 'function') {
+                    GPUCtor = GPU.default;
+                    console.log('   Found GPU.default constructor');
+                } else if (typeof GPU === 'function') {
+                    console.log('   GPU is directly a constructor');
+                } else {
+                    console.log('   ⚠️ GPU is not a constructor, checking structure...');
+                    console.log('   GPU keys:', Object.keys(GPU));
+                }
+                
+                // Try to create a GPU instance and check WebGL
+                try {
+                    if (typeof GPUCtor === 'function') {
+                        // Try with explicit GPU mode first
+                        let testGPU = null;
+                        try {
+                            testGPU = new GPUCtor({ mode: 'gpu' });
+                            console.log('   Created GPU instance with mode: gpu');
+                        } catch (e) {
+                            console.log('   Failed to create with mode: gpu, trying default...');
+                            testGPU = new GPUCtor();
+                            console.log('   Created GPU instance with default mode');
+                        }
+                        
+                        if (testGPU) {
+                            const mode = testGPU.mode || (testGPU.getMode ? testGPU.getMode() : 'unknown');
+                            console.log('   GPU.js mode:', mode);
+                            
+                            const webglContext = testGPU.getWebGLContext ? testGPU.getWebGLContext() : null;
+                            console.log('GPU.js WebGL Context:', webglContext ? '✅ Available' : '❌ Not Available');
+                            
+                            if (!webglContext && mode !== 'gpu') {
+                                console.log('   GPU.js is running in CPU mode (WebGL not accessible)');
+                                console.log('   This may be due to browser restrictions or WebGL being blocked');
+                            } else if (!webglContext) {
+                                console.log('   GPU.js reports GPU mode but cannot access WebGL context');
+                            }
+                        }
+                    } else {
+                        console.log('   ❌ Cannot create GPU instance - constructor not found');
+                    }
+                } catch (e) {
+                    console.log('❌ Error creating GPU instance:', e.message);
+                    console.log('   Error details:', e);
+                }
+            } else {
+                console.log('⚠️ GPU.js library not found - GPU acceleration unavailable');
+            }
+            
+            // Try to load GPU backend
+            const gpuBackend = await loadGPUBackend();
+            
+            if (gpuBackend) {
+                console.log('✅ GPU backend loaded successfully');
+                console.log('   GPU backend isAvailable:', gpuBackend.isAvailable);
+                setBackend('gpu');
+            } else {
+                console.log('⚠️ GPU backend not available');
+                if (typeof GPU === 'undefined') {
+                    console.log('   Reason: GPU.js library not loaded');
+                } else if (!webglAvailable) {
+                    console.log('   Reason: WebGL not supported in this browser');
+                } else {
+                    console.log('   Reason: GPU.js cannot access WebGL (may be blocked by browser)');
+                }
+            }
+            
+            // Check current backend
+            const backend = getBackend();
+            const backendName = backend.name;
+            const isGPU = backendName === 'gpu';
+            
+            console.log('Current backend:', backendName);
+            console.log('Available backends:', listBackends());
+            console.log('Best detected backend:', detectBackend());
+            
+            if (isGPU) {
+                console.log('%c🚀 GPU ACCELERATION IS ACTIVE', 'font-size: 14px; font-weight: bold; color: #00ff00; background: #000; padding: 4px;');
+            } else {
+                console.log('%c💻 Using CPU (no GPU acceleration)', 'font-size: 14px; font-weight: bold; color: #ffaa00; background: #000; padding: 4px;');
+            }
+            
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('Tip: Use hal9000.getBackend() to check backend status anytime');
+        })();
+    </script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.bundle.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js"></script>
+
+
+</head>
+
+<body>
+    <div class="titleHeader">
+        <div class="halLogo">
+            <h1 class="halName">
+                <div style="padding-left: 10px;padding-right: 5px;">HAL</div>
+                <div style="background-color: black;padding-left:3px;padding-right: 3px;">9000<span style="font-family:serifFont;font-size: 25px;">.js</span></div>
+            </h1>
+        </div>
+        <div style="margin-left: auto;margin-right: auto;width:270px;margin-top:5px;">
+            <h4 style="font-family:serifFont;margin-top:0px;color:#cecece;margin-left: 10px;">a&nbsp;javascript-based&nbsp;neural&nbsp;network</h4>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div style="display: flex;">
+                <div class="halSVG">
+                    <img src="assets/images/HAL9000_Case.svg" height="658px;" style="height: 100%;">
+                </div>
+                <div class="optionsBox">
+                    <div class="optionsBorder" style="background-color: #000000;padding: 5px 5px 15px 5px;">
+                        <h4 class="optionsStyle" style="margin-left: 10px;">
+                            Network Options
+                            <a id="dialogOne">?</a>
+                        </h4>
+                        <div style="position: relative;margin-left: 60px;">
+                            <div>
+                                <div style="display:flex;">
+                                    <h5 class="optionsStyle" style="margin-top: 10px 0 0 6px;">Initial Inputs:&nbsp;</h5>
+                                    <input class="initInputs inputOne" value="0">
+                                    <input class="initInputs inputTwo" value="0">
+                                    <input class="initInputs inputThree" value="1">
+                                </div>
+                                <div style="display: flex;width: 450px;margin-top: 8px;">
+                                    <h5 class="optionsStyle" style="margin-top: 10px 0 0 6px;">Select Number of Layers</h5>
+                                    <select class="layerCount">
+										<option value="1" selected="selected">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+									</select>
+                                    <div style="display:flex;margin-left: 27px;">
+                                        <h5 class="optionsStyle" style="margin-top: 10px 0 0 6px;">Training Cycles</h5>
+                                        <input style="width: 90px;margin-left: 15px;" class="initInputs trainCycles" value="10000" />
+                                    </div>
+                                    <button class="btn btn-default train" value="Train">TRAIN<br>HAL</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div id="Hal" class="appended" ng-controller="outputController">
+                            <b class="optionsStyle">Error:&nbsp;</b>
+                            <span class="resultsFont" ng-cloak>{{ globalFinalError  }}</span>
+                            <p>
+                                <b class="optionsStyle">Actual output: [&nbsp;</b>
+                                <span class="resultsFont" ng-cloak>{{ globalOutputArr[0] }}</span>,&nbsp;
+                                <span class="resultsFont" ng-cloak>{{ globalOutputArr[1] }}</span>,&nbsp;
+                                <span class="resultsFont" ng-cloak>{{ globalOutputArr[2] }}</span>&nbsp;
+                                <span style="color:#adadad;">]</span>
+                            </p>
+                            <b class="optionsStyle">HAL9000 thinks your input is: [&nbsp;</b>
+                            <span class="resultsFont" ng-cloak>{{ rounded[0] }}</span>,&nbsp;
+                            <span class="resultsFont" ng-cloak>{{ rounded[1] }}</span>,&nbsp;
+                            <span class="resultsFont" ng-cloak>{{ rounded[2] }}</span>&nbsp;
+                            <span style="color:#adadad;">]</span>
+                        </div>
+                        <div class="canvasContainer">
+                            <div class="chartSpinner">
+                                <div class="chartLoadSpinner"></div>
+                            </div>
+                            <div class="chartDiv">
+                                <iframe class="chartjs-hidden-iframe chartStyle" tabindex="-1"></iframe>
+                                <canvas id="myChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center;margin-bottom: 10px;">
+        <a href="https://github.com/razorsyntax/HAL9000" style="color:#0202b1" target="_blank">GitHub</a>&nbsp;|&nbsp;
+        <a href="#" class="dialogTwo" style="color:#0202b1">Terms, Conditions, Use</a>
+    </div>
+    <div ng-controller="dialogController">
+        <div id="funDialog" title="About">
+            <div class="innerContent" style="display:none">
+                <div ng-repeat="content in dialog">
+                    <p><b style="color: #ac0000;">{{ content.section }}</b> {{ content.description }}</p>
+                </div>
+            </div>
+        </div>
+        <div id="termsDialog" title="{{ termsTitle }}">
+            <div class="innerContent2" style="display:none">
+                <div>
+                    <p>{{ termsFirstParagraph }}</p>
+
+                    <p>{{ termsSecondParagraph }}
+                        <a href="{{ licenseUrl }}" style="color:#4a4adc" target="_blank">MIT License</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //Function definitions
+        var scrapeInput = function () {
+            var inputs = [
+                parseFloat(document.getElementsByClassName('inputOne')[0].value),
+                parseFloat(document.getElementsByClassName('inputTwo')[0].value),
+                parseFloat(document.getElementsByClassName('inputThree')[0].value)
+            ]
+            return inputs;
+        };
+        var scrapeTrainCycles = function () {
+            return parseInt(document.getElementsByClassName('trainCycles')[0].value);
+        }
+        var include = function (loopCount, globalError) {
+            var arr = [];
+            var count = [];
+            for (let g = 0; g < loopCount; g++) {
+                if (g % 100 === 0) {
+                    count.push(g);
+                    if (globalError[g] < 0.01) {
+                        arr.push(globalError[g]);
+                    }
+                }
+            }
+            return {
+                "count": count,
+                "includeData": arr
+            };
+        };
+        var inputsLength = function (scrapedInputs) {
+            var len = [];
+            var str = "";
+            for (let i = 0; i < scrapedInputs.length; i++) {
+                str = scrapedInputs[i].toString();
+                if (str.indexOf('.') !== -1) {
+                    len.push((scrapedInputs[i].toString()).length);
+                } else {
+                    len.push(1);
+                }
+            }
+            return len;
+        };
+        var finalResult = function (final, calculatedArr, init) {
+
+            var arr = calculatedArr;
+            var len = final;
+            var finalArr = [];
+            for (let i = 0; i < arr.length; i++) {
+                if (len[i] === 1) {
+                    finalArr.push(Math.round(arr[i]));
+                } else {
+                    var str = init[i].toString();
+                    var decPos = str.indexOf('.');
+                    var decimalPlaces = (str.slice(decPos + 1)).length;
+                    finalArr.push(arr[i].toFixed(decimalPlaces));
+                }
+            }
+            return finalArr;
+        };
+
+        var renderChart = function (count, includeData) {
+            var ctx = document.getElementById("myChart");
+            var chartAttributes = {
+                type: 'line',
+                data: {
+                    labels: count,
+                    datasets: [
+                        {
+                            label: "Training Error",
+                            fill: false,
+                            lineTension: 0.1,
+                            backgroundColor: "rgba(0,155,220,0.4)",
+                            borderColor: "rgba(0,155,220,1)",
+                            borderCapStyle: 'butt',
+                            borderDash: [],
+                            borderDashOffset: 0.0,
+                            borderJoinStyle: 'miter',
+                            pointBorderColor: "rgba(0,155,220,1)",
+                            pointBackgroundColor: "#fff",
+                            pointBorderWidth: 1,
+                            pointHoverRadius: 5,
+                            pointHoverBackgroundColor: "rgba(0,155,220,1)",
+                            pointHoverBorderColor: "rgba(0,155,220,1)",
+                            pointHoverBorderWidth: 2,
+                            pointRadius: 1,
+                            pointHitRadius: 10,
+                            data: includeData,
+                            spanGaps: true,
+                            defaultFontColor: "rgba(173,173,173,1)"
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            gridLines: {
+                                show: true,
+                                color: '#420000'
+                            },
+                            ticks: {
+                                beginAtZero: false
+                            }
+                        }],
+                        xAxes: [{
+                            gridLines: {
+                                show: true,
+                                color: '#420000'
+                            }
+                        }]
+                    }
+                }
+            };
+            var myChart = new Chart(ctx, chartAttributes);
+            Chart.defaults.global.defaultFontColor = '#adadad';
+        };
+
+        function trainNetwork(data) {
+            // Log backend status before training
+            const backend = getBackend();
+            console.log('%cTraining started with backend: ' + backend.name, 'font-weight: bold; color: #009bdc;');
+
+            var NN = new NeuralNetwork(data.name);
+
+            for (let i = 0; i < data.layerCount.count; i++) {
+                NN.createLayer({
+                    "name": "HiddenLayer",
+                    "type": "hidden",
+                    "neurons": NeuronArray(data.layerCount.layerSize[i], "logsig")
+                });
+            }
+
+            NN.createLayer({
+                "name": "MNIST",
+                "type": "output",
+                "neurons": NeuronArray(3, "logsig")
+            });
+
+            NN.setTarget(data.inputs);
+
+            NN.init(data.inputs);
+
+            var trainedResult = Train(NN, data.inputs, data.rate, data.loopCount, data.enableErrors);
+
+            return trainedResult;
+        };
+
+        var trainPost = function (inputs, layerCount, loopCount, rate, enableErrors) {
+            var layerSize = [];
+            let j = 0;
+            while (j < layerCount) {
+                layerSize.push(inputs.length);
+                j++;
+            }
+
+            var layerSetup = {
+                count: layerCount,
+                layerSize: layerSize
+            }
+
+            var dataObj = {
+                inputs: inputs,
+                layerCount: layerSetup,
+                loopCount: loopCount,
+                rate: rate,
+                enableErrors: enableErrors
+            };
+
+            var nnObj = trainNetwork(dataObj);
+            finish(nnObj, inputs, loopCount);
+            hideSpinner();
+
+            // $.ajax({
+            // 	url: "/train",
+            // 	type: "POST",
+            // 	contentType: "application/json; charset=utf-8",
+            // 	data: JSON.stringify(dataObj),
+            // 	success: function(data){
+            // 		//console.log(data);
+            // 		var obj = JSON.parse(data);
+            // 		var NN = obj;
+            //   		finish(NN, inputs, loopCount);
+            // 		hideSpinner();
+            // 	},
+            // 	error: function(e){
+            // 		console.log(e);
+            // 	}
+            //  });
+        }
+
+		/**
+		 * STARTS NETWORK
+		 */
+        var startNetwork = function (inputs, layerCount) {
+            "use strict";
+
+            var rate = 0.5;
+            var loopCount = scrapeTrainCycles();
+            var enableErrors = true;
+
+            trainPost(inputs, layerCount, loopCount, rate, enableErrors);
+        };
+
+        function finish(NN, inputs, loopCount) {
+            // Log backend status after training
+            const backend = getBackend();
+            console.log('%cTraining completed using backend: ' + backend.name, 'font-weight: bold; color: #00ff00;');
+            
+            var predictionArray = NN.predictionArray;
+            var globalFinalError = NN.globalFinal;
+            var globalError = NN.globalError;
+
+            var includeData = include(loopCount, globalError);
+
+            renderChart(includeData.count, includeData.includeData);
+
+            window.NN = NN;
+            var final = inputsLength(inputs);
+            var globalOutputArr = predictionArray[loopCount - 1];
+            var rounded = finalResult(final, globalOutputArr, inputs);
+
+            //adding to localstorage for angular <--- Bad practice btw... don't do this.
+            localStorage['globalFinalError'] = globalFinalError;
+            localStorage['globalOutputArr'] = globalOutputArr;
+            localStorage['rounded'] = rounded;
+
+            //updating scope and passing to angular <--- Also bad practice... don't do this.
+            var $scope = angular.element('div[ng-controller="outputController"]').scope();
+            if ($scope !== undefined) {
+                var $scope = angular.element('div[ng-controller="outputController"]').scope();
+                $scope.globalFinalError = localStorage['globalFinalError'];
+                $scope.globalOutputArr = localStorage['globalOutputArr'].split(",");
+                $scope.rounded = localStorage['rounded'].split(",");
+                $scope.$apply();
+            } else {
+                document.addEventListener('DOMContentLoaded', function () {
+                    var $scope = angular.element('div[ng-controller="outputController"]').scope();
+                    $scope.globalFinalError = localStorage['globalFinalError'];
+                    $scope.globalOutputArr = localStorage['globalOutputArr'].split(",");
+                    $scope.rounded = localStorage['rounded'].split(",");
+                    $scope.$apply();
+                });
+            }
+
+        }
+
+        function showSpinner() {
+            $(".chartSpinner").css('opacity', '1');
+            $(".chartSpinner").css('display', 'block');
+            $(".chartDiv").css('opacity', '0');
+        }
+        function hideSpinner() {
+            $(".chartSpinner").css('opacity', '0');
+            $(".chartSpinner").css('display', 'none');
+            $(".chartDiv").css('opacity', '1');
+        }
+
+        var train = function () {
+            showSpinner();
+            $(".optionsBorder").focus();
+            $(".chartDiv").children().remove();
+            $(".chartDiv").append('<canvas id="myChart"></canvas>');
+
+            var inputs = scrapeInput();
+            var layerCount = parseInt(document.getElementsByClassName('layerCount')[0].value);
+
+            startNetwork(inputs, layerCount);
+        };
+
+        var dialogAttr = {
+            height: 400,
+            width: 350,
+            modal: true
+        };
+
+        //UX
+        $(".train").on('click', train);
+
+        $("#dialogOne").on('click', function () {
+            $(".innerContent").css("display", "block")
+            $("#funDialog").dialog(dialogAttr);
+        });
+
+        $(".dialogTwo").on('click', function () {
+            $(".innerContent2").css("display", "block");
+            $("#termsDialog").dialog(dialogAttr);
+        });
+
+
+		/**
+		 * START NETWORK ON PAGE LOAD
+		 */
+        (function () {
+            train();
+        }).call(this);
+    </script>
+
+</body>
+
+</html>
