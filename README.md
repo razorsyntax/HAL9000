@@ -4,7 +4,7 @@ A JavaScript neural network library with hardware acceleration support for Node.
 
 ## What is HAL9000?
 
-HAL9000 is a lightweight, flexible neural network library designed for developers who want to build and train feedforward neural networks directly in JavaScript. Whether you're working on machine learning projects in the browser, Node.js applications, or modern web frameworks, HAL9000 provides a straightforward API for creating, training, and using neural networks.
+HAL9000 is a lightweight, flexible neural network library designed for developers who want to build and train multi-layer feedforward neural networks with supervised learning via backpropagation directly in JavaScript. Whether you're working on machine learning projects in the browser, Node.js applications, or modern web frameworks, HAL9000 provides a straightforward API for creating, training, and using neural networks.
 
 **How HAL9000 Works:**
 
@@ -27,7 +27,7 @@ HAL9000 focuses on simplicity and flexibility—you have full control over your 
 
 ## Features
 
-- 🧠 **Neural Network Engine**: Feedforward neural networks with backpropagation
+- 🧠 **Neural Network Engine**: Multi-layer feedforward neural networks with supervised learning via backpropagation
 - ⚡ **Hardware Acceleration**: Optional GPU support via GPU.js (browser) and TensorFlow.js (Node.js)
 - 📦 **Multiple Formats**: ES Modules, CommonJS, and UMD builds
 - 🎯 **Framework Agnostic**: Works with Node.js, Angular, React, and Vanilla JS
