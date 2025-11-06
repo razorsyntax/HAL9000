@@ -1,6 +1,6 @@
 {
 	"name": "hal9000js",
-	"version": "2.0.2",
+	"version": "2.0.3",
 	"description": "A JavaScript neural network library with hardware acceleration support",
 	"main": "dist/hal9000.cjs.js",
 	"module": "dist/hal9000.esm.js",
