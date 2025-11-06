@@ -9,9 +9,9 @@ import { NeuralNetwork, NeuronArray, Prediction, Train } from 'hal9000js';
 		<button (click)="train()">Train Network</button>
 		@if(result){
 			<div>
-				<p>Error: {{ error }}</p>
-				<p>Prediction: {{ result }}</p>
-			</div>
+			<p>Error: {{ error }}</p>
+			<p>Prediction: {{ result }}</p>
+		</div>
 		}
 	`
 })
